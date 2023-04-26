@@ -1,11 +1,17 @@
-using ApiMobile.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ApiMobile.Models;
 
 namespace ApiMobile.Controllers
 {
-    public class TipoLesoesController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class TipoLesoesController : ControllerBase
     {
         private readonly ApiContext _context;
 
@@ -14,150 +20,104 @@ namespace ApiMobile.Controllers
             _context = context;
         }
 
-        // GET: TipoLesoes
-        public async Task<IActionResult> Index()
+        // GET: api/TipoLesoes
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<TipoLesao>>> GetTiposLesao()
         {
-            var apiContext = _context.TiposLesao.Include(t => t.Medico);
-            return View(await apiContext.ToListAsync());
+          if (_context.TiposLesao == null)
+          {
+              return NotFound();
+          }
+            return await _context.TiposLesao.ToListAsync();
         }
 
-        // GET: TipoLesoes/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/TipoLesoes/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<TipoLesao>> GetTipoLesao(int id)
         {
-            if (id == null || _context.TiposLesao == null)
-            {
-                return NotFound();
-            }
-
-            var tipoLesao = await _context.TiposLesao
-                .Include(t => t.Medico)
-                .FirstOrDefaultAsync(m => m.IdTipoLesao == id);
-            if (tipoLesao == null)
-            {
-                return NotFound();
-            }
-
-            return View(tipoLesao);
-        }
-
-        // GET: TipoLesoes/Create
-        public IActionResult Create()
-        {
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico");
-            return View();
-        }
-
-        // POST: TipoLesoes/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdTipoLesao,IdMedico,Nome,Sigla,Descricao,DataCriacao,DataAtualizacao")] TipoLesao tipoLesao)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(tipoLesao);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico", tipoLesao.IdMedico);
-            return View(tipoLesao);
-        }
-
-        // GET: TipoLesoes/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.TiposLesao == null)
-            {
-                return NotFound();
-            }
-
+          if (_context.TiposLesao == null)
+          {
+              return NotFound();
+          }
             var tipoLesao = await _context.TiposLesao.FindAsync(id);
+
             if (tipoLesao == null)
             {
                 return NotFound();
             }
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico", tipoLesao.IdMedico);
-            return View(tipoLesao);
+
+            return tipoLesao;
         }
 
-        // POST: TipoLesoes/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdTipoLesao,IdMedico,Nome,Sigla,Descricao,DataCriacao,DataAtualizacao")] TipoLesao tipoLesao)
+        // PUT: api/TipoLesoes/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutTipoLesao(int id, TipoLesao tipoLesao)
         {
             if (id != tipoLesao.IdTipoLesao)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(tipoLesao).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(tipoLesao);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TipoLesaoExists(tipoLesao.IdTipoLesao))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico", tipoLesao.IdMedico);
-            return View(tipoLesao);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TipoLesaoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: TipoLesoes/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/TipoLesoes
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<TipoLesao>> PostTipoLesao(TipoLesao tipoLesao)
         {
-            if (id == null || _context.TiposLesao == null)
+          if (_context.TiposLesao == null)
+          {
+              return Problem("Entity set 'ApiContext.TiposLesao'  is null.");
+          }
+            _context.TiposLesao.Add(tipoLesao);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetTipoLesao", new { id = tipoLesao.IdTipoLesao }, tipoLesao);
+        }
+
+        // DELETE: api/TipoLesoes/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteTipoLesao(int id)
+        {
+            if (_context.TiposLesao == null)
             {
                 return NotFound();
             }
-
-            var tipoLesao = await _context.TiposLesao
-                .Include(t => t.Medico)
-                .FirstOrDefaultAsync(m => m.IdTipoLesao == id);
+            var tipoLesao = await _context.TiposLesao.FindAsync(id);
             if (tipoLesao == null)
             {
                 return NotFound();
             }
 
-            return View(tipoLesao);
-        }
-
-        // POST: TipoLesoes/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.TiposLesao == null)
-            {
-                return Problem("Entity set 'ApiContext.TiposLesao'  is null.");
-            }
-            var tipoLesao = await _context.TiposLesao.FindAsync(id);
-            if (tipoLesao != null)
-            {
-                _context.TiposLesao.Remove(tipoLesao);
-            }
-            
+            _context.TiposLesao.Remove(tipoLesao);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool TipoLesaoExists(int id)
         {
-          return (_context.TiposLesao?.Any(e => e.IdTipoLesao == id)).GetValueOrDefault();
+            return (_context.TiposLesao?.Any(e => e.IdTipoLesao == id)).GetValueOrDefault();
         }
     }
 }

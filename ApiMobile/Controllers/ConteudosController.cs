@@ -1,11 +1,17 @@
-using ApiMobile.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ApiMobile.Models;
 
 namespace ApiMobile.Controllers
 {
-    public class ConteudosController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ConteudosController : ControllerBase
     {
         private readonly ApiContext _context;
 
@@ -14,156 +20,104 @@ namespace ApiMobile.Controllers
             _context = context;
         }
 
-        // GET: Conteudos
-        public async Task<IActionResult> Index()
+        // GET: api/Conteudos
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Conteudo>>> GetConteudos()
         {
-            var apiContext = _context.Conteudos.Include(c => c.Medico).Include(c => c.TipoLesao);
-            return View(await apiContext.ToListAsync());
+          if (_context.Conteudos == null)
+          {
+              return NotFound();
+          }
+            return await _context.Conteudos.ToListAsync();
         }
 
-        // GET: Conteudos/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Conteudos/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Conteudo>> GetConteudo(int id)
         {
-            if (id == null || _context.Conteudos == null)
-            {
-                return NotFound();
-            }
-
-            var conteudo = await _context.Conteudos
-                .Include(c => c.Medico)
-                .Include(c => c.TipoLesao)
-                .FirstOrDefaultAsync(m => m.IdConteudo == id);
-            if (conteudo == null)
-            {
-                return NotFound();
-            }
-
-            return View(conteudo);
-        }
-
-        // GET: Conteudos/Create
-        public IActionResult Create()
-        {
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico");
-            ViewData["IdTipoLesao"] = new SelectList(_context.TiposLesao, "IdTipoLesao", "IdTipoLesao");
-            return View();
-        }
-
-        // POST: Conteudos/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdConteudo,IdMedico,IdTipoLesao,Titulo,Subtitulo,Descricao,Observacao,DataCriacao,DataAtualizacao")] Conteudo conteudo)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(conteudo);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico", conteudo.IdMedico);
-            ViewData["IdTipoLesao"] = new SelectList(_context.TiposLesao, "IdTipoLesao", "IdTipoLesao", conteudo.IdTipoLesao);
-            return View(conteudo);
-        }
-
-        // GET: Conteudos/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Conteudos == null)
-            {
-                return NotFound();
-            }
-
+          if (_context.Conteudos == null)
+          {
+              return NotFound();
+          }
             var conteudo = await _context.Conteudos.FindAsync(id);
+
             if (conteudo == null)
             {
                 return NotFound();
             }
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico", conteudo.IdMedico);
-            ViewData["IdTipoLesao"] = new SelectList(_context.TiposLesao, "IdTipoLesao", "IdTipoLesao", conteudo.IdTipoLesao);
-            return View(conteudo);
+
+            return conteudo;
         }
 
-        // POST: Conteudos/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdConteudo,IdMedico,IdTipoLesao,Titulo,Subtitulo,Descricao,Observacao,DataCriacao,DataAtualizacao")] Conteudo conteudo)
+        // PUT: api/Conteudos/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutConteudo(int id, Conteudo conteudo)
         {
             if (id != conteudo.IdConteudo)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(conteudo).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(conteudo);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ConteudoExists(conteudo.IdConteudo))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico", conteudo.IdMedico);
-            ViewData["IdTipoLesao"] = new SelectList(_context.TiposLesao, "IdTipoLesao", "IdTipoLesao", conteudo.IdTipoLesao);
-            return View(conteudo);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ConteudoExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Conteudos/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Conteudos
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Conteudo>> PostConteudo(Conteudo conteudo)
         {
-            if (id == null || _context.Conteudos == null)
+          if (_context.Conteudos == null)
+          {
+              return Problem("Entity set 'ApiContext.Conteudos'  is null.");
+          }
+            _context.Conteudos.Add(conteudo);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetConteudo", new { id = conteudo.IdConteudo }, conteudo);
+        }
+
+        // DELETE: api/Conteudos/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteConteudo(int id)
+        {
+            if (_context.Conteudos == null)
             {
                 return NotFound();
             }
-
-            var conteudo = await _context.Conteudos
-                .Include(c => c.Medico)
-                .Include(c => c.TipoLesao)
-                .FirstOrDefaultAsync(m => m.IdConteudo == id);
+            var conteudo = await _context.Conteudos.FindAsync(id);
             if (conteudo == null)
             {
                 return NotFound();
             }
 
-            return View(conteudo);
-        }
-
-        // POST: Conteudos/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Conteudos == null)
-            {
-                return Problem("Entity set 'ApiContext.Conteudos'  is null.");
-            }
-            var conteudo = await _context.Conteudos.FindAsync(id);
-            if (conteudo != null)
-            {
-                _context.Conteudos.Remove(conteudo);
-            }
-            
+            _context.Conteudos.Remove(conteudo);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool ConteudoExists(int id)
         {
-          return (_context.Conteudos?.Any(e => e.IdConteudo == id)).GetValueOrDefault();
+            return (_context.Conteudos?.Any(e => e.IdConteudo == id)).GetValueOrDefault();
         }
     }
 }
