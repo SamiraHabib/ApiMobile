@@ -1,11 +1,17 @@
-using ApiMobile.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using ApiMobile.Models;
 
 namespace ApiMobile.Controllers
 {
-    public class ExerciciosController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class ExerciciosController : ControllerBase
     {
         private readonly ApiContext _context;
 
@@ -14,156 +20,104 @@ namespace ApiMobile.Controllers
             _context = context;
         }
 
-        // GET: Exercicios
-        public async Task<IActionResult> Index()
+        // GET: api/Exercicios
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Exercicio>>> GetExercicios()
         {
-            var apiContext = _context.Exercicios.Include(e => e.Medico).Include(e => e.TipoLesao);
-            return View(await apiContext.ToListAsync());
+          if (_context.Exercicios == null)
+          {
+              return NotFound();
+          }
+            return await _context.Exercicios.ToListAsync();
         }
 
-        // GET: Exercicios/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/Exercicios/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Exercicio>> GetExercicio(int id)
         {
-            if (id == null || _context.Exercicios == null)
-            {
-                return NotFound();
-            }
-
-            var exercicio = await _context.Exercicios
-                .Include(e => e.Medico)
-                .Include(e => e.TipoLesao)
-                .FirstOrDefaultAsync(m => m.IdExercicio == id);
-            if (exercicio == null)
-            {
-                return NotFound();
-            }
-
-            return View(exercicio);
-        }
-
-        // GET: Exercicios/Create
-        public IActionResult Create()
-        {
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico");
-            ViewData["IdTipoLesao"] = new SelectList(_context.TiposLesao, "IdTipoLesao", "IdTipoLesao");
-            return View();
-        }
-
-        // POST: Exercicios/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdExercicio,IdMedico,IdTipoLesao,Nome,Descricao,Instrucoes,EncodedGif,Precaucoes,Observacoes,DataCriacao,DataAtualizacao")] Exercicio exercicio)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(exercicio);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico", exercicio.IdMedico);
-            ViewData["IdTipoLesao"] = new SelectList(_context.TiposLesao, "IdTipoLesao", "IdTipoLesao", exercicio.IdTipoLesao);
-            return View(exercicio);
-        }
-
-        // GET: Exercicios/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.Exercicios == null)
-            {
-                return NotFound();
-            }
-
+          if (_context.Exercicios == null)
+          {
+              return NotFound();
+          }
             var exercicio = await _context.Exercicios.FindAsync(id);
+
             if (exercicio == null)
             {
                 return NotFound();
             }
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico", exercicio.IdMedico);
-            ViewData["IdTipoLesao"] = new SelectList(_context.TiposLesao, "IdTipoLesao", "IdTipoLesao", exercicio.IdTipoLesao);
-            return View(exercicio);
+
+            return exercicio;
         }
 
-        // POST: Exercicios/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdExercicio,IdMedico,IdTipoLesao,Nome,Descricao,Instrucoes,EncodedGif,Precaucoes,Observacoes,DataCriacao,DataAtualizacao")] Exercicio exercicio)
+        // PUT: api/Exercicios/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutExercicio(int id, Exercicio exercicio)
         {
             if (id != exercicio.IdExercicio)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(exercicio).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(exercicio);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ExercicioExists(exercicio.IdExercicio))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            ViewData["IdMedico"] = new SelectList(_context.Medicos, "IdMedico", "IdMedico", exercicio.IdMedico);
-            ViewData["IdTipoLesao"] = new SelectList(_context.TiposLesao, "IdTipoLesao", "IdTipoLesao", exercicio.IdTipoLesao);
-            return View(exercicio);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!ExercicioExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: Exercicios/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/Exercicios
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<Exercicio>> PostExercicio(Exercicio exercicio)
         {
-            if (id == null || _context.Exercicios == null)
+          if (_context.Exercicios == null)
+          {
+              return Problem("Entity set 'ApiContext.Exercicios'  is null.");
+          }
+            _context.Exercicios.Add(exercicio);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetExercicio", new { id = exercicio.IdExercicio }, exercicio);
+        }
+
+        // DELETE: api/Exercicios/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteExercicio(int id)
+        {
+            if (_context.Exercicios == null)
             {
                 return NotFound();
             }
-
-            var exercicio = await _context.Exercicios
-                .Include(e => e.Medico)
-                .Include(e => e.TipoLesao)
-                .FirstOrDefaultAsync(m => m.IdExercicio == id);
+            var exercicio = await _context.Exercicios.FindAsync(id);
             if (exercicio == null)
             {
                 return NotFound();
             }
 
-            return View(exercicio);
-        }
-
-        // POST: Exercicios/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.Exercicios == null)
-            {
-                return Problem("Entity set 'ApiContext.Exercicios'  is null.");
-            }
-            var exercicio = await _context.Exercicios.FindAsync(id);
-            if (exercicio != null)
-            {
-                _context.Exercicios.Remove(exercicio);
-            }
-            
+            _context.Exercicios.Remove(exercicio);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool ExercicioExists(int id)
         {
-          return (_context.Exercicios?.Any(e => e.IdExercicio == id)).GetValueOrDefault();
+            return (_context.Exercicios?.Any(e => e.IdExercicio == id)).GetValueOrDefault();
         }
     }
 }

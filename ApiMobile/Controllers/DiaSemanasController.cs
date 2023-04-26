@@ -1,10 +1,17 @@
-using ApiMobile.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ApiMobile.Models;
 
 namespace ApiMobile.Controllers
 {
-    public class DiaSemanasController : Controller
+    [Route("api/[controller]")]
+    [ApiController]
+    public class DiaSemanasController : ControllerBase
     {
         private readonly ApiContext _context;
 
@@ -13,145 +20,104 @@ namespace ApiMobile.Controllers
             _context = context;
         }
 
-        // GET: DiaSemanas
-        public async Task<IActionResult> Index()
+        // GET: api/DiaSemanas
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<DiaSemana>>> GetDiasSemana()
         {
-              return _context.DiasSemana != null ? 
-                          View(await _context.DiasSemana.ToListAsync()) :
-                          Problem("Entity set 'ApiContext.DiasSemana'  is null.");
+          if (_context.DiasSemana == null)
+          {
+              return NotFound();
+          }
+            return await _context.DiasSemana.ToListAsync();
         }
 
-        // GET: DiaSemanas/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: api/DiaSemanas/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<DiaSemana>> GetDiaSemana(int id)
         {
-            if (id == null || _context.DiasSemana == null)
-            {
-                return NotFound();
-            }
-
-            var diaSemana = await _context.DiasSemana
-                .FirstOrDefaultAsync(m => m.IdDiaSemana == id);
-            if (diaSemana == null)
-            {
-                return NotFound();
-            }
-
-            return View(diaSemana);
-        }
-
-        // GET: DiaSemanas/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: DiaSemanas/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("IdDiaSemana,Nome")] DiaSemana diaSemana)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(diaSemana);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(diaSemana);
-        }
-
-        // GET: DiaSemanas/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null || _context.DiasSemana == null)
-            {
-                return NotFound();
-            }
-
+          if (_context.DiasSemana == null)
+          {
+              return NotFound();
+          }
             var diaSemana = await _context.DiasSemana.FindAsync(id);
+
             if (diaSemana == null)
             {
                 return NotFound();
             }
-            return View(diaSemana);
+
+            return diaSemana;
         }
 
-        // POST: DiaSemanas/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdDiaSemana,Nome")] DiaSemana diaSemana)
+        // PUT: api/DiaSemanas/5
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutDiaSemana(int id, DiaSemana diaSemana)
         {
             if (id != diaSemana.IdDiaSemana)
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            if (ModelState.IsValid)
+            _context.Entry(diaSemana).State = EntityState.Modified;
+
+            try
             {
-                try
-                {
-                    _context.Update(diaSemana);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!DiaSemanaExists(diaSemana.IdDiaSemana))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                await _context.SaveChangesAsync();
             }
-            return View(diaSemana);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!DiaSemanaExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+
+            return NoContent();
         }
 
-        // GET: DiaSemanas/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // POST: api/DiaSemanas
+        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+        [HttpPost]
+        public async Task<ActionResult<DiaSemana>> PostDiaSemana(DiaSemana diaSemana)
         {
-            if (id == null || _context.DiasSemana == null)
+          if (_context.DiasSemana == null)
+          {
+              return Problem("Entity set 'ApiContext.DiasSemana'  is null.");
+          }
+            _context.DiasSemana.Add(diaSemana);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetDiaSemana", new { id = diaSemana.IdDiaSemana }, diaSemana);
+        }
+
+        // DELETE: api/DiaSemanas/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteDiaSemana(int id)
+        {
+            if (_context.DiasSemana == null)
             {
                 return NotFound();
             }
-
-            var diaSemana = await _context.DiasSemana
-                .FirstOrDefaultAsync(m => m.IdDiaSemana == id);
+            var diaSemana = await _context.DiasSemana.FindAsync(id);
             if (diaSemana == null)
             {
                 return NotFound();
             }
 
-            return View(diaSemana);
-        }
-
-        // POST: DiaSemanas/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            if (_context.DiasSemana == null)
-            {
-                return Problem("Entity set 'ApiContext.DiasSemana'  is null.");
-            }
-            var diaSemana = await _context.DiasSemana.FindAsync(id);
-            if (diaSemana != null)
-            {
-                _context.DiasSemana.Remove(diaSemana);
-            }
-            
+            _context.DiasSemana.Remove(diaSemana);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            return NoContent();
         }
 
         private bool DiaSemanaExists(int id)
         {
-          return (_context.DiasSemana?.Any(e => e.IdDiaSemana == id)).GetValueOrDefault();
+            return (_context.DiasSemana?.Any(e => e.IdDiaSemana == id)).GetValueOrDefault();
         }
     }
 }
