@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using ApiMobile.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApiMobile.Models;
 
 namespace ApiMobile.Controllers
 {
@@ -24,10 +19,10 @@ namespace ApiMobile.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Conteudo>>> GetConteudos()
         {
-          if (_context.Conteudos == null)
-          {
-              return NotFound();
-          }
+            if (_context.Conteudos == null)
+            {
+                return NotFound();
+            }
             return await _context.Conteudos.ToListAsync();
         }
 
@@ -35,10 +30,10 @@ namespace ApiMobile.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Conteudo>> GetConteudo(int id)
         {
-          if (_context.Conteudos == null)
-          {
-              return NotFound();
-          }
+            if (_context.Conteudos == null)
+            {
+                return NotFound();
+            }
             var conteudo = await _context.Conteudos.FindAsync(id);
 
             if (conteudo == null)
@@ -50,7 +45,6 @@ namespace ApiMobile.Controllers
         }
 
         // PUT: api/Conteudos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutConteudo(int id, Conteudo conteudo)
         {
@@ -81,14 +75,13 @@ namespace ApiMobile.Controllers
         }
 
         // POST: api/Conteudos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Conteudo>> PostConteudo(Conteudo conteudo)
         {
-          if (_context.Conteudos == null)
-          {
-              return Problem("Entity set 'ApiContext.Conteudos'  is null.");
-          }
+            if (_context.Conteudos == null)
+            {
+                return Problem("Entity set 'ApiContext.Conteudos'  is null.");
+            }
             _context.Conteudos.Add(conteudo);
             await _context.SaveChangesAsync();
 

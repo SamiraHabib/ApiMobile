@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using ApiMobile.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApiMobile.Models;
 
 namespace ApiMobile.Controllers
 {
@@ -24,10 +19,10 @@ namespace ApiMobile.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Exercicio>>> GetExercicios()
         {
-          if (_context.Exercicios == null)
-          {
-              return NotFound();
-          }
+            if (_context.Exercicios == null)
+            {
+                return NotFound();
+            }
             return await _context.Exercicios.ToListAsync();
         }
 
@@ -35,10 +30,10 @@ namespace ApiMobile.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Exercicio>> GetExercicio(int id)
         {
-          if (_context.Exercicios == null)
-          {
-              return NotFound();
-          }
+            if (_context.Exercicios == null)
+            {
+                return NotFound();
+            }
             var exercicio = await _context.Exercicios.FindAsync(id);
 
             if (exercicio == null)
@@ -50,7 +45,6 @@ namespace ApiMobile.Controllers
         }
 
         // PUT: api/Exercicios/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutExercicio(int id, Exercicio exercicio)
         {
@@ -81,14 +75,13 @@ namespace ApiMobile.Controllers
         }
 
         // POST: api/Exercicios
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Exercicio>> PostExercicio(Exercicio exercicio)
         {
-          if (_context.Exercicios == null)
-          {
-              return Problem("Entity set 'ApiContext.Exercicios'  is null.");
-          }
+            if (_context.Exercicios == null)
+            {
+                return Problem("Entity set 'ApiContext.Exercicios'  is null.");
+            }
             _context.Exercicios.Add(exercicio);
             await _context.SaveChangesAsync();
 

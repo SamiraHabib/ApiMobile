@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using ApiMobile.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApiMobile.Models;
 
 namespace ApiMobile.Controllers
 {
@@ -24,10 +19,10 @@ namespace ApiMobile.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Medico>>> GetMedicos()
         {
-          if (_context.Medicos == null)
-          {
-              return NotFound();
-          }
+            if (_context.Medicos == null)
+            {
+                return NotFound();
+            }
             return await _context.Medicos.ToListAsync();
         }
 
@@ -35,10 +30,10 @@ namespace ApiMobile.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Medico>> GetMedico(int id)
         {
-          if (_context.Medicos == null)
-          {
-              return NotFound();
-          }
+            if (_context.Medicos == null)
+            {
+                return NotFound();
+            }
             var medico = await _context.Medicos.FindAsync(id);
 
             if (medico == null)
@@ -50,7 +45,6 @@ namespace ApiMobile.Controllers
         }
 
         // PUT: api/Medicos/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutMedico(int id, Medico medico)
         {
@@ -81,14 +75,13 @@ namespace ApiMobile.Controllers
         }
 
         // POST: api/Medicos
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Medico>> PostMedico(Medico medico)
         {
-          if (_context.Medicos == null)
-          {
-              return Problem("Entity set 'ApiContext.Medicos'  is null.");
-          }
+            if (_context.Medicos == null)
+            {
+                return Problem("Entity set 'ApiContext.Medicos'  is null.");
+            }
             _context.Medicos.Add(medico);
             await _context.SaveChangesAsync();
 

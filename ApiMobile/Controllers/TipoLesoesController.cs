@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using ApiMobile.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApiMobile.Models;
 
 namespace ApiMobile.Controllers
 {
@@ -24,10 +19,10 @@ namespace ApiMobile.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<TipoLesao>>> GetTiposLesao()
         {
-          if (_context.TiposLesao == null)
-          {
-              return NotFound();
-          }
+            if (_context.TiposLesao == null)
+            {
+                return NotFound();
+            }
             return await _context.TiposLesao.ToListAsync();
         }
 
@@ -35,10 +30,10 @@ namespace ApiMobile.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TipoLesao>> GetTipoLesao(int id)
         {
-          if (_context.TiposLesao == null)
-          {
-              return NotFound();
-          }
+            if (_context.TiposLesao == null)
+            {
+                return NotFound();
+            }
             var tipoLesao = await _context.TiposLesao.FindAsync(id);
 
             if (tipoLesao == null)
@@ -50,7 +45,6 @@ namespace ApiMobile.Controllers
         }
 
         // PUT: api/TipoLesoes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutTipoLesao(int id, TipoLesao tipoLesao)
         {
@@ -81,14 +75,13 @@ namespace ApiMobile.Controllers
         }
 
         // POST: api/TipoLesoes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<TipoLesao>> PostTipoLesao(TipoLesao tipoLesao)
         {
-          if (_context.TiposLesao == null)
-          {
-              return Problem("Entity set 'ApiContext.TiposLesao'  is null.");
-          }
+            if (_context.TiposLesao == null)
+            {
+                return Problem("Entity set 'ApiContext.TiposLesao'  is null.");
+            }
             _context.TiposLesao.Add(tipoLesao);
             await _context.SaveChangesAsync();
 

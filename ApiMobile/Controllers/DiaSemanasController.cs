@@ -1,11 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
+using ApiMobile.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ApiMobile.Models;
 
 namespace ApiMobile.Controllers
 {
@@ -24,10 +19,10 @@ namespace ApiMobile.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<DiaSemana>>> GetDiasSemana()
         {
-          if (_context.DiasSemana == null)
-          {
-              return NotFound();
-          }
+            if (_context.DiasSemana == null)
+            {
+                return NotFound();
+            }
             return await _context.DiasSemana.ToListAsync();
         }
 
@@ -35,10 +30,10 @@ namespace ApiMobile.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<DiaSemana>> GetDiaSemana(int id)
         {
-          if (_context.DiasSemana == null)
-          {
-              return NotFound();
-          }
+            if (_context.DiasSemana == null)
+            {
+                return NotFound();
+            }
             var diaSemana = await _context.DiasSemana.FindAsync(id);
 
             if (diaSemana == null)
@@ -50,7 +45,6 @@ namespace ApiMobile.Controllers
         }
 
         // PUT: api/DiaSemanas/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDiaSemana(int id, DiaSemana diaSemana)
         {
@@ -81,14 +75,13 @@ namespace ApiMobile.Controllers
         }
 
         // POST: api/DiaSemanas
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<DiaSemana>> PostDiaSemana(DiaSemana diaSemana)
         {
-          if (_context.DiasSemana == null)
-          {
-              return Problem("Entity set 'ApiContext.DiasSemana'  is null.");
-          }
+            if (_context.DiasSemana == null)
+            {
+                return Problem("Entity set 'ApiContext.DiasSemana'  is null.");
+            }
             _context.DiasSemana.Add(diaSemana);
             await _context.SaveChangesAsync();
 

@@ -19,10 +19,10 @@ namespace ApiMobile.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Paciente>>> GetPacientes()
         {
-          if (_context.Pacientes == null)
-          {
-              return NotFound();
-          }
+            if (_context.Pacientes == null)
+            {
+                return NotFound();
+            }
             return await _context.Pacientes.ToListAsync();
         }
 
@@ -30,10 +30,10 @@ namespace ApiMobile.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Paciente>> GetPaciente(int id)
         {
-          if (_context.Pacientes == null)
-          {
-              return NotFound();
-          }
+            if (_context.Pacientes == null)
+            {
+                return NotFound();
+            }
             var paciente = await _context.Pacientes.FindAsync(id);
 
             if (paciente == null)
@@ -45,7 +45,6 @@ namespace ApiMobile.Controllers
         }
 
         // PUT: api/Pacientes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPaciente(int id, Paciente paciente)
         {
@@ -76,14 +75,13 @@ namespace ApiMobile.Controllers
         }
 
         // POST: api/Pacientes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
         public async Task<ActionResult<Paciente>> PostPaciente(Paciente paciente)
         {
-          if (_context.Pacientes == null)
-          {
-              return Problem("Entity set 'ApiContext.Pacientes'  is null.");
-          }
+            if (_context.Pacientes == null)
+            {
+                return Problem("Entity set 'ApiContext.Pacientes'  is null.");
+            }
             _context.Pacientes.Add(paciente);
             await _context.SaveChangesAsync();
 
