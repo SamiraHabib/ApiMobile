@@ -1,4 +1,5 @@
 ﻿using ApiMobile.Models;
+using ApiMobile.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiMobile
@@ -18,6 +19,8 @@ namespace ApiMobile
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            services.AddHttpClient();
+            services.AddSingleton<ICRMApiService, CRMApiService>();
 
             // Adiciona o DbContext ao contêiner
             // Obtenha a string de conexão do arquivo appsettings.json
@@ -30,11 +33,13 @@ namespace ApiMobile
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApiMobile v1"));
+                
             }
 
             app.UseHttpsRedirection();
