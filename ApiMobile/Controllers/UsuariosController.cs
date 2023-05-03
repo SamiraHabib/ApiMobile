@@ -1,5 +1,6 @@
 using ApiMobile.DTO;
 using ApiMobile.Models;
+using ApiMobile.Services;
 using ApiMobile.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,11 +13,13 @@ namespace ApiMobile.Controllers
     {
         private readonly ApiContext _context;
         private readonly IAuthService _authService;
+        private readonly ICRMApiService _crmapiService;
 
-        public UsuariosController(ApiContext context, IAuthService authService)
+        public UsuariosController(ApiContext context, IAuthService authService, ICRMApiService crmService)
         {
             _context = context;
             _authService = authService;
+            _crmapiService = crmService;
         }
 
         // GET: api/Usuarios
@@ -87,6 +90,23 @@ namespace ApiMobile.Controllers
                 return Problem("Entity set 'ApiContext.Usuarios'  is null.");
             }
 
+            if (usuario.Medico != null)
+            {
+                var medico = usuario.Medico;
+
+                var crm = await _crmapiService.GetMedicosAsync(medico.NumeroCrm, medico.UfCrm);
+                var validCrm = crm.Itens.ElementAtOrDefault(0);
+
+                var ufIsEqual = validCrm?.UF == medico.UfCrm;
+                var numCrmIsEqual = validCrm?.Numero == medico.NumeroCrm;
+                var isCrmAtivo = validCrm?.Situacao.ToLower() == "ativo";
+
+                if (!ufIsEqual || !numCrmIsEqual || !isCrmAtivo)
+                {
+                    return Unauthorized("Invalid CRM");
+                }
+            }
+
             var senha = usuario.SenhaEncriptada;
             usuario.SenhaEncriptada = BCrypt.Net.BCrypt.HashPassword(senha);
 
@@ -132,7 +152,7 @@ namespace ApiMobile.Controllers
                 Name = usuario.Email,
                 Role = usuario.Medico == null ? "Paciente" : "Medico",
             };
-
+            
             var token = _authService.GenerateJwtToken(authenticatedUser);
 
             return Ok(new { token });
