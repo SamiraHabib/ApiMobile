@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiMobile.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20230425050209_Initial")]
+    [Migration("20230503025850_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -138,8 +138,12 @@ namespace ApiMobile.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdMedico"));
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DataNascimento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NumeroCrm")
                         .IsRequired()
@@ -155,8 +159,6 @@ namespace ApiMobile.Migrations
 
                     b.HasKey("IdMedico");
 
-                    b.HasIndex("IdUsuario");
-
                     b.ToTable("medico", (string)null);
                 });
 
@@ -168,15 +170,17 @@ namespace ApiMobile.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdPaciente"));
 
-                    b.Property<int>("IdUsuario")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("DataNascimento")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Nome")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Ocupacao")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdPaciente");
-
-                    b.HasIndex("IdUsuario");
 
                     b.ToTable("paciente", (string)null);
                 });
@@ -222,16 +226,15 @@ namespace ApiMobile.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdUsuario"));
 
-                    b.Property<DateTime>("DataNascimento")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Nome")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("IdMedico")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("IdPaciente")
+                        .HasColumnType("int");
 
                     b.Property<string>("SenhaEncriptada")
                         .IsRequired()
@@ -278,28 +281,6 @@ namespace ApiMobile.Migrations
                     b.Navigation("Medico");
 
                     b.Navigation("TipoLesao");
-                });
-
-            modelBuilder.Entity("ApiMobile.Models.Medico", b =>
-                {
-                    b.HasOne("ApiMobile.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
-                });
-
-            modelBuilder.Entity("ApiMobile.Models.Paciente", b =>
-                {
-                    b.HasOne("ApiMobile.Models.Usuario", "Usuario")
-                        .WithMany()
-                        .HasForeignKey("IdUsuario")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("ApiMobile.Models.TipoLesao", b =>

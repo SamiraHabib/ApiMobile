@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -24,41 +25,20 @@ namespace ApiMobile.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "usuario",
-                columns: table => new
-                {
-                    IdUsuario = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SenhaEncriptada = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_usuario", x => x.IdUsuario);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "medico",
                 columns: table => new
                 {
                     IdMedico = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false),
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NumeroCrm = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UfCrm = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SituacaoCrm = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    SituacaoCrm = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_medico", x => x.IdMedico);
-                    table.ForeignKey(
-                        name: "FK_medico_usuario_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "usuario",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -67,18 +47,29 @@ namespace ApiMobile.Migrations
                 {
                     IdPaciente = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IdUsuario = table.Column<int>(type: "int", nullable: false),
-                    Ocupacao = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Nome = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Ocupacao = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    DataNascimento = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_paciente", x => x.IdPaciente);
-                    table.ForeignKey(
-                        name: "FK_paciente_usuario_IdUsuario",
-                        column: x => x.IdUsuario,
-                        principalTable: "usuario",
-                        principalColumn: "IdUsuario",
-                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "usuario",
+                columns: table => new
+                {
+                    IdUsuario = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdPaciente = table.Column<int>(type: "int", nullable: true),
+                    IdMedico = table.Column<int>(type: "int", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SenhaEncriptada = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_usuario", x => x.IdUsuario);
                 });
 
             migrationBuilder.CreateTable(
@@ -192,16 +183,6 @@ namespace ApiMobile.Migrations
                 column: "IdTipoLesao");
 
             migrationBuilder.CreateIndex(
-                name: "IX_medico_IdUsuario",
-                table: "medico",
-                column: "IdUsuario");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_paciente_IdUsuario",
-                table: "paciente",
-                column: "IdUsuario");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_tipo_lesao_IdMedico",
                 table: "tipo_lesao",
                 column: "IdMedico");
@@ -223,13 +204,13 @@ namespace ApiMobile.Migrations
                 name: "paciente");
 
             migrationBuilder.DropTable(
+                name: "usuario");
+
+            migrationBuilder.DropTable(
                 name: "tipo_lesao");
 
             migrationBuilder.DropTable(
                 name: "medico");
-
-            migrationBuilder.DropTable(
-                name: "usuario");
         }
     }
 }
