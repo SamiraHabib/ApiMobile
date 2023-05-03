@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Newtonsoft.Json;
+using System.ComponentModel.DataAnnotations;
 
 namespace ApiMobile.Models
 {
@@ -9,6 +10,7 @@ namespace ApiMobile.Models
         public string Nome { get; set; }
         public string NumeroCrm { get; set; }
         public string UfCrm { get; set; }
+        [JsonIgnore]
         public string SituacaoCrm { get; set; }
         public DateTime DataNascimento { get; set; }
     }

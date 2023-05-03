@@ -1,6 +1,5 @@
-﻿using ApiMobile.Models;
-using Microsoft.Extensions.Primitives;
-using System;
+﻿using ApiMobile.DTO;
+using ApiMobile.Services.Interfaces;
 using System.Text.Json;
 
 namespace ApiMobile.Services

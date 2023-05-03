@@ -239,6 +239,10 @@ namespace ApiMobile.Migrations
 
                     b.HasKey("IdUsuario");
 
+                    b.HasIndex("IdMedico");
+
+                    b.HasIndex("IdPaciente");
+
                     b.ToTable("usuario", (string)null);
                 });
 
@@ -289,6 +293,23 @@ namespace ApiMobile.Migrations
                         .IsRequired();
 
                     b.Navigation("Medico");
+                });
+
+            modelBuilder.Entity("ApiMobile.Models.Usuario", b =>
+                {
+                    b.HasOne("ApiMobile.Models.Medico", "Medico")
+                        .WithMany()
+                        .HasForeignKey("IdMedico")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ApiMobile.Models.Paciente", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("IdPaciente")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Medico");
+
+                    b.Navigation("Paciente");
                 });
 #pragma warning restore 612, 618
         }

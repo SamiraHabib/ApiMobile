@@ -1,6 +1,7 @@
-﻿using ApiMobile.Models;
+﻿using ApiMobile.DTO;
+using ApiMobile.Models;
 
-namespace ApiMobile.Services
+namespace ApiMobile.Services.Interfaces
 {
     public interface IAuthService
     {

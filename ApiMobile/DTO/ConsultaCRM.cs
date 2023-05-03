@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace ApiMobile.Models
+namespace ApiMobile.DTO
 {
     public class ConsultaCRM
     {

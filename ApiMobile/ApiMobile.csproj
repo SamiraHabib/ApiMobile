@@ -34,7 +34,7 @@
   <ItemGroup>
     <Folder Include="Controllers\" />
     <Folder Include="Migrations\" />
-    <Folder Include="Views\" />
+    <Folder Include="DTO\" />
   </ItemGroup>
 
 </Project>

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiMobile.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20230503025850_Initial")]
+    [Migration("20230503035525_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -242,6 +242,10 @@ namespace ApiMobile.Migrations
 
                     b.HasKey("IdUsuario");
 
+                    b.HasIndex("IdMedico");
+
+                    b.HasIndex("IdPaciente");
+
                     b.ToTable("usuario", (string)null);
                 });
 
@@ -292,6 +296,23 @@ namespace ApiMobile.Migrations
                         .IsRequired();
 
                     b.Navigation("Medico");
+                });
+
+            modelBuilder.Entity("ApiMobile.Models.Usuario", b =>
+                {
+                    b.HasOne("ApiMobile.Models.Medico", "Medico")
+                        .WithMany()
+                        .HasForeignKey("IdMedico")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("ApiMobile.Models.Paciente", "Paciente")
+                        .WithMany()
+                        .HasForeignKey("IdPaciente")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Medico");
+
+                    b.Navigation("Paciente");
                 });
 #pragma warning restore 612, 618
         }

@@ -1,5 +1,7 @@
-﻿using ApiMobile.Models;
+﻿using ApiMobile.DTO;
+using ApiMobile.Models;
 using ApiMobile.Repositorios;
+using ApiMobile.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Authentication;
@@ -39,9 +41,8 @@ namespace ApiMobile.Services
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
-                user.GetType() == typeof(Paciente) ? new Claim(ClaimTypes.Role, "Paciente") :
-                user.GetType() == typeof(Medico) ? new Claim(ClaimTypes.Role, "Medico") :
-                null
+                new Claim(ClaimTypes.Email, user.Email),
+                new Claim(ClaimTypes.Role, user.Role),
             }.Where(c => c != null).ToList();
 
             var tokenDescriptor = new SecurityTokenDescriptor

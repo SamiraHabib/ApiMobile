@@ -1,6 +1,6 @@
+using ApiMobile.DTO;
 using ApiMobile.Models;
-using ApiMobile.Services;
-using ApiMobile.ViewModel;
+using ApiMobile.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -86,6 +86,10 @@ namespace ApiMobile.Controllers
             {
                 return Problem("Entity set 'ApiContext.Usuarios'  is null.");
             }
+
+            var senha = usuario.SenhaEncriptada;
+            usuario.SenhaEncriptada = BCrypt.Net.BCrypt.HashPassword(senha);
+
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
 
@@ -113,7 +117,7 @@ namespace ApiMobile.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> UsuarioLogin([FromBody] LoginViewModel model)
+        public async Task<IActionResult> UsuarioLogin([FromBody] Login model)
         {
             var usuario = await _authService.ValidateCredentials(model.Email, model.Senha);
             if (usuario == null)
@@ -121,11 +125,17 @@ namespace ApiMobile.Controllers
                 return Unauthorized();
             }
 
-            var authenticatedUser = new UsuarioAutentificado();
+            var authenticatedUser = new UsuarioAutentificado()
+            {
+                Id = usuario.IdUsuario,
+                Email = usuario.Email,
+                Name = usuario.Email,
+                Role = usuario.Medico == null ? "Paciente" : "Medico",
+            };
 
             var token = _authService.GenerateJwtToken(authenticatedUser);
 
-            return Ok(new { token });
+            return Ok(token);
         }
 
         private bool UsuarioExists(int id)
