@@ -1,12 +1,12 @@
 ﻿using ApiMobile.Models;
-using ApiMobile.Repositorio;
+using ApiMobile.Repositorios;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Authentication;
 using System.Security.Claims;
 using System.Text;
 
-namespace ApiMobile.Service
+namespace ApiMobile.Services
 {
     public class AuthService : IAuthService
     {
@@ -21,7 +21,7 @@ namespace ApiMobile.Service
 
         public async Task<Usuario> ValidateCredentials(string userEmail, string userPassword)
         {
-            var user = await _usuarioRepositorio.GetUserByUserEmailAsync(userEmail) 
+            var user = await _usuarioRepositorio.GetUserByUserEmailAsync(userEmail)
                        ?? throw new InvalidCredentialException("E-mail ou senha inválidos.");
             if (!BCrypt.Net.BCrypt.Verify(userPassword, user.SenhaEncriptada))
                 throw new InvalidCredentialException("E-mail ou senha inválidos.");

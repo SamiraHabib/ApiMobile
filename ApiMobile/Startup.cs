@@ -1,7 +1,6 @@
 ﻿using ApiMobile.Models;
+using ApiMobile.Repositorios;
 using ApiMobile.Services;
-using ApiMobile.Repositorio;
-using ApiMobile.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -48,7 +47,7 @@ namespace ApiMobile
                         ValidateIssuerSigningKey = true,
                         ValidIssuer = Configuration["Jwt:Issuer"],
                         ValidAudience = Configuration["Jwt:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"] ?? string.Empty))
                     };
                 });
 
@@ -76,7 +75,6 @@ namespace ApiMobile
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApiMobile v1"));
-                
             }
 
             app.UseHttpsRedirection();

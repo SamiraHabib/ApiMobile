@@ -1,6 +1,6 @@
 ﻿using ApiMobile.Models;
 
-namespace ApiMobile.Service
+namespace ApiMobile.Services
 {
     public interface IAuthService
     {

@@ -1,6 +1,6 @@
 ﻿using ApiMobile.Models;
 
-namespace ApiMobile.Repositorio
+namespace ApiMobile.Repositorios
 {
     public interface IUsuarioRepositorio
     {

@@ -11,7 +11,7 @@ namespace ApiMobile.Models
         public int? IdMedico { get; set; }
         [Required]
         public string Email { get; set; }
-        //[JsonIgnore]
+        [JsonIgnore]
         [Required]
         public string SenhaEncriptada { get; set; }
     }

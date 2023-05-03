@@ -1,5 +1,5 @@
 using ApiMobile.Models;
-using ApiMobile.Service;
+using ApiMobile.Services;
 using ApiMobile.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

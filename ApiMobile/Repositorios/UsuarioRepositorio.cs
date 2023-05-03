@@ -1,7 +1,7 @@
 ﻿using ApiMobile.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace ApiMobile.Repositorio
+namespace ApiMobile.Repositorios
 {
     public class UsuarioRepositorio : IUsuarioRepositorio
     {
