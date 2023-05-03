@@ -1,5 +1,10 @@
 ﻿using ApiMobile.Models;
+using ApiMobile.Repositorio;
+using ApiMobile.Service;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace ApiMobile
 {
@@ -18,6 +23,8 @@ namespace ApiMobile
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 
             // Adiciona o DbContext ao contêiner
             // Obtenha a string de conexão do arquivo appsettings.json
@@ -26,6 +33,36 @@ namespace ApiMobile
             // Configure o DbContext para usar a string de conexão
             services.AddDbContext<ApiContext>(options =>
                 options.UseSqlServer(connectionString));
+
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidAudience = Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
+                    };
+                });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("PacientePolicy", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("role", "Paciente");
+                });
+
+                options.AddPolicy("MedicoPolicy", policy =>
+                {
+                    policy.RequireAuthenticatedUser();
+                    policy.RequireClaim("role", "Medico");
+                });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

@@ -1,4 +1,6 @@
 using ApiMobile.Models;
+using ApiMobile.Service;
+using ApiMobile.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +11,12 @@ namespace ApiMobile.Controllers
     public class MedicosController : ControllerBase
     {
         private readonly ApiContext _context;
+        private readonly IAuthService _authService;
 
-        public MedicosController(ApiContext context)
+        public MedicosController(ApiContext context, IAuthService authService)
         {
             _context = context;
+            _authService = authService;
         }
 
         // GET: api/Medicos
@@ -106,6 +110,22 @@ namespace ApiMobile.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> MedicoLogin([FromBody] LoginViewModel model)
+        {
+            var medico = await _authService.ValidateCredentials(model.Email, model.Senha);
+            if (medico == null)
+            {
+                return Unauthorized();
+            }
+
+            var authenticatedUser = new UsuarioAutentificado();
+
+            var token = _authService.GenerateJwtToken(authenticatedUser);
+
+            return Ok(new { token });
         }
 
         private bool MedicoExists(int id)

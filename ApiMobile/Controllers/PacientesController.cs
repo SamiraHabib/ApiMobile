@@ -1,22 +1,29 @@
 using ApiMobile.Models;
+using ApiMobile.Service;
+using ApiMobile.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiMobile.Controllers
 {
+
     [Route("api/[controller]")]
     [ApiController]
     public class PacientesController : ControllerBase
     {
         private readonly ApiContext _context;
+        private readonly IAuthService _authService;
 
-        public PacientesController(ApiContext context)
+        public PacientesController(ApiContext context, IAuthService authService)
         {
             _context = context;
+            _authService = authService;
         }
 
         // GET: api/Pacientes
         [HttpGet]
+        [Authorize(Policy = "PacientePolicy")]
         public async Task<ActionResult<IEnumerable<Paciente>>> GetPacientes()
         {
             if (_context.Pacientes == null)
@@ -28,6 +35,7 @@ namespace ApiMobile.Controllers
 
         // GET: api/Pacientes/5
         [HttpGet("{id}")]
+        [Authorize(Policy = "PacientePolicy")]
         public async Task<ActionResult<Paciente>> GetPaciente(int id)
         {
             if (_context.Pacientes == null)
@@ -107,7 +115,23 @@ namespace ApiMobile.Controllers
 
             return NoContent();
         }
+        
+        [HttpPost("login")]
+        public async Task<IActionResult> PacienteLogin([FromBody] LoginViewModel model)
+        {
+            var paciente = await _authService.ValidateCredentials(model.Email, model.Senha);
+            if (paciente == null)
+            {
+                return Unauthorized();
+            }
 
+            var authenticatedUser = new UsuarioAutentificado();
+
+            var token = _authService.GenerateJwtToken(authenticatedUser);
+
+            return Ok(new { token });
+        }
+        
         private bool PacienteExists(int id)
         {
             return (_context.Pacientes?.Any(e => e.IdPaciente == id)).GetValueOrDefault();

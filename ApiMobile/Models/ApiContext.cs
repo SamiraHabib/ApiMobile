@@ -16,6 +16,8 @@ namespace ApiMobile.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             modelBuilder.Entity<Usuario>().ToTable("usuario").HasKey(u => u.IdUsuario);
             modelBuilder.Entity<Medico>().ToTable("medico").HasKey(m => m.IdMedico);
             modelBuilder.Entity<Paciente>().ToTable("paciente").HasKey(p => p.IdPaciente);
@@ -23,18 +25,6 @@ namespace ApiMobile.Models
             modelBuilder.Entity<Conteudo>().ToTable("conteudo").HasKey(c => c.IdConteudo);
             modelBuilder.Entity<Exercicio>().ToTable("exercicio").HasKey(e => e.IdExercicio);
             modelBuilder.Entity<DiaSemana>().ToTable("dia_semana").HasKey(ds => ds.IdDiaSemana);
-
-            modelBuilder.Entity<Medico>()
-                .HasOne(m => m.Usuario)
-                .WithMany()
-                .HasForeignKey(m => m.IdUsuario)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Paciente>()
-                .HasOne(p => p.Usuario)
-                .WithMany()
-                .HasForeignKey(p => p.IdUsuario)
-                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TipoLesao>()
                 .HasOne(t => t.Medico)

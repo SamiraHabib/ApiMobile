@@ -1,4 +1,6 @@
 using ApiMobile.Models;
+using ApiMobile.Service;
+using ApiMobile.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,10 +11,12 @@ namespace ApiMobile.Controllers
     public class UsuariosController : ControllerBase
     {
         private readonly ApiContext _context;
+        private readonly IAuthService _authService;
 
-        public UsuariosController(ApiContext context)
+        public UsuariosController(ApiContext context, IAuthService authService)
         {
             _context = context;
+            _authService = authService;
         }
 
         // GET: api/Usuarios
@@ -106,6 +110,22 @@ namespace ApiMobile.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        [HttpPost("login")]
+        public async Task<IActionResult> UsuarioLogin([FromBody] LoginViewModel model)
+        {
+            var usuario = await _authService.ValidateCredentials(model.Email, model.Senha);
+            if (usuario == null)
+            {
+                return Unauthorized();
+            }
+
+            var authenticatedUser = new UsuarioAutentificado();
+
+            var token = _authService.GenerateJwtToken(authenticatedUser);
+
+            return Ok(new { token });
         }
 
         private bool UsuarioExists(int id)
