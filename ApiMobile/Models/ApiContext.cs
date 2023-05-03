@@ -26,6 +26,18 @@ namespace ApiMobile.Models
             modelBuilder.Entity<Exercicio>().ToTable("exercicio").HasKey(e => e.IdExercicio);
             modelBuilder.Entity<DiaSemana>().ToTable("dia_semana").HasKey(ds => ds.IdDiaSemana);
 
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Paciente)
+                .WithMany()
+                .HasForeignKey(u => u.IdPaciente)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Usuario>()
+                .HasOne(u => u.Medico)
+                .WithMany()
+                .HasForeignKey(u => u.IdMedico)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<TipoLesao>()
                 .HasOne(t => t.Medico)
                 .WithMany()

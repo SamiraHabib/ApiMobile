@@ -1,4 +1,4 @@
-﻿namespace ApiMobile.Models
+﻿namespace ApiMobile.DTO
 {
     public class UsuarioAutentificado
     {

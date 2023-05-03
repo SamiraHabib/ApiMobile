@@ -1,5 +1,5 @@
-﻿using ApiMobile.Models;
-using ApiMobile.Services;
+﻿using ApiMobile.DTO;
+using ApiMobile.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiMobile.Controllers

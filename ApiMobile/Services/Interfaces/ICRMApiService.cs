@@ -1,5 +1,6 @@
-﻿using ApiMobile.Models;
-namespace ApiMobile.Services
+﻿using ApiMobile.DTO;
+
+namespace ApiMobile.Services.Interfaces
 {
     public interface ICRMApiService
     {

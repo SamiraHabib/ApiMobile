@@ -57,22 +57,6 @@ namespace ApiMobile.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "usuario",
-                columns: table => new
-                {
-                    IdUsuario = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    IdPaciente = table.Column<int>(type: "int", nullable: true),
-                    IdMedico = table.Column<int>(type: "int", nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SenhaEncriptada = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_usuario", x => x.IdUsuario);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "tipo_lesao",
                 columns: table => new
                 {
@@ -93,6 +77,34 @@ namespace ApiMobile.Migrations
                         column: x => x.IdMedico,
                         principalTable: "medico",
                         principalColumn: "IdMedico",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "usuario",
+                columns: table => new
+                {
+                    IdUsuario = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    IdPaciente = table.Column<int>(type: "int", nullable: true),
+                    IdMedico = table.Column<int>(type: "int", nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SenhaEncriptada = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_usuario", x => x.IdUsuario);
+                    table.ForeignKey(
+                        name: "FK_usuario_medico_IdMedico",
+                        column: x => x.IdMedico,
+                        principalTable: "medico",
+                        principalColumn: "IdMedico",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_usuario_paciente_IdPaciente",
+                        column: x => x.IdPaciente,
+                        principalTable: "paciente",
+                        principalColumn: "IdPaciente",
                         onDelete: ReferentialAction.Restrict);
                 });
 
@@ -186,6 +198,16 @@ namespace ApiMobile.Migrations
                 name: "IX_tipo_lesao_IdMedico",
                 table: "tipo_lesao",
                 column: "IdMedico");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_usuario_IdMedico",
+                table: "usuario",
+                column: "IdMedico");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_usuario_IdPaciente",
+                table: "usuario",
+                column: "IdPaciente");
         }
 
         /// <inheritdoc />
@@ -201,13 +223,13 @@ namespace ApiMobile.Migrations
                 name: "exercicio");
 
             migrationBuilder.DropTable(
-                name: "paciente");
-
-            migrationBuilder.DropTable(
                 name: "usuario");
 
             migrationBuilder.DropTable(
                 name: "tipo_lesao");
+
+            migrationBuilder.DropTable(
+                name: "paciente");
 
             migrationBuilder.DropTable(
                 name: "medico");

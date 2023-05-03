@@ -1,5 +1,6 @@
+using ApiMobile.DTO;
 using ApiMobile.Models;
-using ApiMobile.Services;
+using ApiMobile.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -129,7 +130,7 @@ namespace ApiMobile.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> MedicoLogin([FromBody] LoginViewModel model)
+        public async Task<IActionResult> MedicoLogin([FromBody] Login model)
         {
             var medico = await _authService.ValidateCredentials(model.Email, model.Senha);
             if (medico == null)

@@ -1,6 +1,7 @@
 ﻿using ApiMobile.Models;
 using ApiMobile.Repositorios;
 using ApiMobile.Services;
+using ApiMobile.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
