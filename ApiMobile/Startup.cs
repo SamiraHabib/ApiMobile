@@ -1,4 +1,5 @@
 ﻿using ApiMobile.Models;
+using ApiMobile.Services;
 using ApiMobile.Repositorio;
 using ApiMobile.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,6 +24,8 @@ namespace ApiMobile
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
+            services.AddHttpClient();
+            services.AddSingleton<ICRMApiService, CRMApiService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
 
@@ -67,11 +70,13 @@ namespace ApiMobile
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApiMobile v1"));
+                
             }
 
             app.UseHttpsRedirection();
