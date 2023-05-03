@@ -19,6 +19,6 @@ namespace ApiMobile.Models
         [JsonPropertyName("api_consultas")]
         public string ApiConsultas { get; set; }
         [JsonPropertyName("item")]
-        public ICollection<ConsultaCRM> ConsultaCRM {get; set;}
+        public ICollection<ConsultaCRM> Itens {get; set;}
     }
 }

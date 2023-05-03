@@ -1,6 +1,5 @@
 using ApiMobile.Models;
 using ApiMobile.Services;
-using ApiMobile.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,11 +11,13 @@ namespace ApiMobile.Controllers
     {
         private readonly ApiContext _context;
         private readonly IAuthService _authService;
+        private readonly ICRMApiService _crmApiService;
 
-        public MedicosController(ApiContext context, IAuthService authService)
+        public MedicosController(ApiContext context, IAuthService authService, ICRMApiService crmApiService)
         {
             _context = context;
             _authService = authService;
+            _crmApiService = crmApiService;
         }
 
         // GET: api/Medicos
@@ -86,6 +87,21 @@ namespace ApiMobile.Controllers
             {
                 return Problem("Entity set 'ApiContext.Medicos'  is null.");
             }
+
+            var crm = await _crmApiService.GetMedicosAsync(medico.NumeroCrm, medico.UfCrm);
+            var validCrm = crm.Itens.ElementAtOrDefault(0);
+
+            if (validCrm == null)
+            {
+                return Unauthorized("Invalid CRM");
+            }
+
+            if (validCrm.Numero == medico.NumeroCrm && validCrm.UF == medico.UfCrm)
+            {
+                return Unauthorized("Invalid CRM");
+            }
+            
+
             _context.Medicos.Add(medico);
             await _context.SaveChangesAsync();
 

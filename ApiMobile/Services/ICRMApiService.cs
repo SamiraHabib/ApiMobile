@@ -3,6 +3,6 @@ namespace ApiMobile.Services
 {
     public interface ICRMApiService
     {
-        Task<ConsultaCRMResult> GetMedicos(string numero, string uf);
+        Task<ConsultaCRMResult> GetMedicosAsync(string numero, string uf);
     }
 }

@@ -15,7 +15,8 @@ namespace ApiMobile.Services
             configuration = config;
             _clientFactory = clientFactory;
         }
-        public async Task<ConsultaCRMResult> GetMedicos(string numero, string uf)
+
+        public async Task<ConsultaCRMResult> GetMedicosAsync(string numero, string uf)
         {
             var tokenApi = configuration.GetSection("CRMApi:token");
 
@@ -38,7 +39,6 @@ namespace ApiMobile.Services
                 }
                 
                 return result;
-
             }
             else
             {

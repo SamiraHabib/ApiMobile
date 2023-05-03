@@ -18,8 +18,7 @@ namespace ApiMobile.Controllers
         [HttpGet]
         public async Task<ActionResult<ConsultaCRMResult>> GetCRM(string numero, string uf)
         {
-            
-            var crms = await _crmApiService.GetMedicos(numero, uf);
+            var crms = await _crmApiService.GetMedicosAsync(numero, uf);
 
             return crms;
         }
