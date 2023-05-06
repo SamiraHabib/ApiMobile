@@ -33,6 +33,10 @@ namespace ApiMobile.Models
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Usuario>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
+            modelBuilder.Entity<Usuario>()
                 .HasOne(u => u.Medico)
                 .WithMany()
                 .HasForeignKey(u => u.IdMedico)
