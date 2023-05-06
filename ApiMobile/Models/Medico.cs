@@ -11,7 +11,7 @@ namespace ApiMobile.Models
         public string NumeroCrm { get; set; }
         public string UfCrm { get; set; }
         [JsonIgnore]
-        public string SituacaoCrm { get; set; }
+        public string? SituacaoCrm { get; set; }
         public DateTime DataNascimento { get; set; }
     }
 }
