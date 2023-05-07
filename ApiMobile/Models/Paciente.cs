@@ -8,8 +8,6 @@ namespace ApiMobile.Models
         [Key]
         [JsonIgnore]
         public int IdPaciente { get; set; }
-        public string Nome { get; set; }
         public string? Ocupacao { get; set; }
-        public DateTime DataNascimento { get; set; }
     }
 }
