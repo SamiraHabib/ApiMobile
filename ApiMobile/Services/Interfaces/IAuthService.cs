@@ -5,7 +5,7 @@ namespace ApiMobile.Services.Interfaces
 {
     public interface IAuthService
     {
-        JwtAuthentication GenerateJwtToken(UsuarioAutentificado usuarioAtentificado);
+        JwtAuthentication GenerateJwtToken(UsuarioAutenticado usuarioAtentificado);
         Task<Usuario> ValidateCredentials(string email, string password);
     }
 }

@@ -30,7 +30,10 @@ namespace ApiMobile.Controllers
             {
                 return NotFound();
             }
-            return await _context.Usuarios.ToListAsync();
+            return await _context.Usuarios
+                .Include(u => u.Medico)
+                .Include(u => u.Paciente)
+                .ToListAsync();
         }
 
         // GET: api/Usuarios/5
@@ -154,16 +157,20 @@ namespace ApiMobile.Controllers
                 return Unauthorized();
             }
 
-            var authenticatedUser = new UsuarioAutentificado()
+            var authenticatedUser = new UsuarioAutenticado
             {
                 Id = usuario.IdUsuario,
                 Email = usuario.Email,
                 Name = usuario.Email,
                 Role = usuario.Medico == null ? "Paciente" : "Medico",
+                Usuario = usuario
             };
 
             var token = _authService.GenerateJwtToken(authenticatedUser);
-            return Ok(token);
+
+            authenticatedUser.Auth = token;
+
+            return Ok(authenticatedUser);
         }
 
         private bool UsuarioExists(int id)

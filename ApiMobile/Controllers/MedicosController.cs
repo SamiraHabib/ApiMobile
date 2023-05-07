@@ -141,7 +141,7 @@ namespace ApiMobile.Controllers
                 return Unauthorized();
             }
 
-            var authenticatedUser = new UsuarioAutentificado();
+            var authenticatedUser = new UsuarioAutenticado();
 
             var token = _authService.GenerateJwtToken(authenticatedUser);
 

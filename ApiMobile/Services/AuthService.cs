@@ -31,7 +31,7 @@ namespace ApiMobile.Services
             return user;
         }
 
-        public JwtAuthentication GenerateJwtToken(UsuarioAutentificado user)
+        public JwtAuthentication GenerateJwtToken(UsuarioAutenticado user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config["Jwt:Secret"] ?? string.Empty);

@@ -115,7 +115,7 @@ namespace ApiMobile.Controllers
 
             return NoContent();
         }
-        
+
         [HttpPost("login")]
         public async Task<IActionResult> PacienteLogin([FromBody] Login model)
         {
@@ -125,13 +125,13 @@ namespace ApiMobile.Controllers
                 return Unauthorized();
             }
 
-            var authenticatedUser = new UsuarioAutentificado();
+            var authenticatedUser = new UsuarioAutenticado();
 
             var token = _authService.GenerateJwtToken(authenticatedUser);
 
             return Ok(new { token });
         }
-        
+
         private bool PacienteExists(int id)
         {
             return (_context.Pacientes?.Any(e => e.IdPaciente == id)).GetValueOrDefault();
