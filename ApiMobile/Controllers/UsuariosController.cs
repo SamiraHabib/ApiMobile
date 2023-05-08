@@ -44,7 +44,12 @@ namespace ApiMobile.Controllers
             {
                 return NotFound();
             }
-            var usuario = await _context.Usuarios.FindAsync(id);
+
+            var usuario = await _context.Usuarios
+                .Include(u => u.Medico)
+                .Include(u => u.Paciente)
+                .Where(u => u.IdUsuario == id)
+                .FirstOrDefaultAsync();
 
             if (usuario == null)
             {
