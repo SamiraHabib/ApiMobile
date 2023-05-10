@@ -1,12 +1,13 @@
 using ApiMobile.DTO;
 using ApiMobile.Models;
-using ApiMobile.Services;
 using ApiMobile.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiMobile.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class UsuariosController : ControllerBase
@@ -91,6 +92,7 @@ namespace ApiMobile.Controllers
 
         // POST: api/Usuarios
         [HttpPost]
+        [AllowAnonymous]
         public async Task<ActionResult<Usuario>> PostUsuario(Usuario usuario)
         {
             if (_context.Usuarios == null)
@@ -153,6 +155,7 @@ namespace ApiMobile.Controllers
             return NoContent();
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> UsuarioLogin([FromBody] Login model)
         {

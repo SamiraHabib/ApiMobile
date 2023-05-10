@@ -1,5 +1,4 @@
 ﻿using ApiMobile.Models;
-
 namespace ApiMobile.DTO
 {
     public class UsuarioAutenticado

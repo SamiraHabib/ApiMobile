@@ -11,11 +11,11 @@ namespace ApiMobile
 {
     public class Startup
     {
-        public IConfiguration Configuration { get; }
+        public IConfiguration _configuration { get; }
 
         public Startup(IConfiguration configuration)
         {
-            Configuration = configuration;
+            _configuration = configuration;
         }
 
         public void ConfigureServices(IServiceCollection services)
@@ -31,7 +31,7 @@ namespace ApiMobile
 
             // Adiciona o DbContext ao contêiner
             // Obtenha a string de conexão do arquivo appsettings.json
-            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            var connectionString = _configuration.GetConnectionString("DefaultConnection");
 
             // Configure o DbContext para usar a string de conexão
             services.AddDbContext<ApiContext>(options =>
@@ -46,9 +46,9 @@ namespace ApiMobile
                         ValidateAudience = true,
                         ValidateLifetime = true,
                         ValidateIssuerSigningKey = true,
-                        ValidIssuer = Configuration["Jwt:Issuer"],
-                        ValidAudience = Configuration["Jwt:Issuer"],
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"] ?? string.Empty))
+                        ValidIssuer = _configuration["Jwt:Issuer"],
+                        ValidAudience = _configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Secret"]))
                     };
                 });
 
@@ -70,7 +70,6 @@ namespace ApiMobile
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -81,6 +80,8 @@ namespace ApiMobile
             app.UseHttpsRedirection();
 
             app.UseRouting();
+
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

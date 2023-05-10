@@ -34,18 +34,20 @@ namespace ApiMobile.Services
         public JwtAuthentication GenerateJwtToken(UsuarioAutenticado user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config["Jwt:Secret"] ?? string.Empty);
-            var expires = DateTime.UtcNow.AddDays(int.Parse(_config["Jwt:ExpirationInDays"] ?? string.Empty));
+            var key = Encoding.ASCII.GetBytes(_config["Jwt:Secret"]);
+            var expires = DateTime.UtcNow.AddDays(int.Parse(_config["Jwt:ExpirationInDays"]));
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
                 new Claim(ClaimTypes.Role, user.Role),
-            }.Where(c => c != null).ToList();
+            };
 
             var tokenDescriptor = new SecurityTokenDescriptor
             {
+                Issuer = _config["JWT:Issuer"],
+                Audience = _config["JWT:Audience"],
                 Subject = new ClaimsIdentity(claims),
                 Expires = expires,
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
