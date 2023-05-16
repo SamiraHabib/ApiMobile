@@ -7,6 +7,7 @@ namespace ApiMobile.Models
     {
         public int IdConteudo { get; set; }
         public int IdMedico { get; set; }
+        [Required]
         public int IdTipoLesao { get; set; }
         public string? Titulo { get; set; }
         public string? Subtitulo { get; set; }
@@ -14,9 +15,8 @@ namespace ApiMobile.Models
         public string? Observacao { get; set; }
         public DateTime DataCriacao { get; set; }
         public DateTime DataAtualizacao { get; set; }
-        public virtual Medico Medico { get; set; }
-        [Required]
+        public virtual Medico? Medico { get; set; }
         [ForeignKey("IdTipoLesao")]
-        public virtual TipoLesao TipoLesao { get; set; }
+        public virtual TipoLesao? TipoLesao { get; set; }
     }
 }
