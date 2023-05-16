@@ -71,6 +71,16 @@ namespace ApiMobile.Models
                 .WithMany()
                 .HasForeignKey(e => e.IdTipoLesao)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<DiaSemana>().HasData(
+              new DiaSemana { IdDiaSemana = 1, Nome = "Domingo" },
+              new DiaSemana { IdDiaSemana = 2, Nome = "Segunda-feira" }, 
+              new DiaSemana { IdDiaSemana = 3, Nome = "Terça-feira" }, 
+              new DiaSemana { IdDiaSemana = 4, Nome = "Quarta-feira" }, 
+              new DiaSemana { IdDiaSemana = 5, Nome = "Quinta-feira" }, 
+              new DiaSemana { IdDiaSemana = 6, Nome = "Sexta-feira" }, 
+              new DiaSemana { IdDiaSemana = 7, Nome = "Sábado" }
+            );
         }
     }
 }
