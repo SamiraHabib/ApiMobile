@@ -12,7 +12,7 @@ namespace ApiMobile.Repositorios
             _context = context;
         }
 
-        public async Task<Usuario> GetUserByUserEmailAsync(string emailUsuario)
+        public async Task<Usuario?> GetUserByUserEmailAsync(string emailUsuario)
         {
             return await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == emailUsuario);
         }

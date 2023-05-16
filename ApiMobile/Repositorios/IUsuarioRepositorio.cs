@@ -4,6 +4,6 @@ namespace ApiMobile.Repositorios
 {
     public interface IUsuarioRepositorio
     {
-        Task<Usuario> GetUserByUserEmailAsync(string userEmail);
+        Task<Usuario?> GetUserByUserEmailAsync(string userEmail);
     }
 }
