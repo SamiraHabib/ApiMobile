@@ -1,5 +1,4 @@
 using Microsoft.EntityFrameworkCore;
-using ApiMobile.Models;
 
 namespace ApiMobile.Models
 {
@@ -14,6 +13,7 @@ namespace ApiMobile.Models
         public DbSet<Conteudo> Conteudos { get; set; }
         public DbSet<Exercicio> Exercicios { get; set; }
         public DbSet<DiaSemana> DiasSemana { get; set; }
+        public DbSet<Rotina> Rotina { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -90,7 +90,5 @@ namespace ApiMobile.Models
               new DiaSemana { IdDiaSemana = 7, Nome = "Sábado" }
             );
         }
-
-        public DbSet<ApiMobile.Models.Rotina>? Rotina { get; set; }
     }
 }
