@@ -1,4 +1,5 @@
-ï»¿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using ApiMobile.Models;
 
 namespace ApiMobile.Models
 {
@@ -25,6 +26,7 @@ namespace ApiMobile.Models
             modelBuilder.Entity<Conteudo>().ToTable("conteudo").HasKey(c => c.IdConteudo);
             modelBuilder.Entity<Exercicio>().ToTable("exercicio").HasKey(e => e.IdExercicio);
             modelBuilder.Entity<DiaSemana>().ToTable("dia_semana").HasKey(ds => ds.IdDiaSemana);
+            modelBuilder.Entity<Rotina>().ToTable("rotina").HasKey(r => r.IdRotina);
 
             modelBuilder.Entity<Usuario>()
                 .HasOne(u => u.Paciente)
@@ -72,15 +74,23 @@ namespace ApiMobile.Models
                 .HasForeignKey(e => e.IdTipoLesao)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Rotina>()
+                .HasOne(e => e.Paciente)
+                .WithMany()
+                .HasForeignKey(e => e.IdPaciente)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<DiaSemana>().HasData(
               new DiaSemana { IdDiaSemana = 1, Nome = "Domingo" },
               new DiaSemana { IdDiaSemana = 2, Nome = "Segunda-feira" }, 
-              new DiaSemana { IdDiaSemana = 3, Nome = "TerÃ§a-feira" }, 
+              new DiaSemana { IdDiaSemana = 3, Nome = "Terça-feira" }, 
               new DiaSemana { IdDiaSemana = 4, Nome = "Quarta-feira" }, 
               new DiaSemana { IdDiaSemana = 5, Nome = "Quinta-feira" }, 
               new DiaSemana { IdDiaSemana = 6, Nome = "Sexta-feira" }, 
-              new DiaSemana { IdDiaSemana = 7, Nome = "SÃ¡bado" }
+              new DiaSemana { IdDiaSemana = 7, Nome = "Sábado" }
             );
         }
+
+        public DbSet<ApiMobile.Models.Rotina>? Rotina { get; set; }
     }
 }
