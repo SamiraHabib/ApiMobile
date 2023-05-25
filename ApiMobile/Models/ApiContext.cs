@@ -14,6 +14,9 @@ namespace ApiMobile.Models
         public DbSet<Exercicio> Exercicios { get; set; }
         public DbSet<DiaSemana> DiasSemana { get; set; }
         public DbSet<Rotina> Rotina { get; set; }
+        public DbSet<RotinaExercicio> RotinaExercicio { get; set; }
+        public DbSet<RotinaDiaSemana> RotinaDiaSemana { get; set; }
+        public DbSet<Notificacao> Notificacao { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,6 +30,9 @@ namespace ApiMobile.Models
             modelBuilder.Entity<Exercicio>().ToTable("exercicio").HasKey(e => e.IdExercicio);
             modelBuilder.Entity<DiaSemana>().ToTable("dia_semana").HasKey(ds => ds.IdDiaSemana);
             modelBuilder.Entity<Rotina>().ToTable("rotina").HasKey(r => r.IdRotina);
+            modelBuilder.Entity<RotinaExercicio>().ToTable("rotinaExercicio").HasKey(re => new {re.IdRotina, re.IdExercicio});
+            modelBuilder.Entity<RotinaDiaSemana>().ToTable("rotinaDiaSemana").HasKey(rd => new { rd.IdRotina, rd.IdDiaSemana });
+            modelBuilder.Entity<Notificacao>().ToTable("notificacao").HasKey(n => n.IdNotificacao);
 
             modelBuilder.Entity<Usuario>()
                 .HasOne(u => u.Paciente)
@@ -75,9 +81,39 @@ namespace ApiMobile.Models
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Rotina>()
-                .HasOne(e => e.Paciente)
+                .HasOne(r => r.Paciente)
                 .WithMany()
-                .HasForeignKey(e => e.IdPaciente)
+                .HasForeignKey(r => r.IdPaciente)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RotinaExercicio>()
+                .HasOne(re => re.Exercicio)
+                .WithMany()
+                .HasForeignKey(re => re.IdExercicio)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RotinaExercicio>()
+                .HasOne(re => re.Rotina)
+                .WithMany()
+                .HasForeignKey(re => re.IdRotina)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RotinaDiaSemana>()
+                .HasOne(rd => rd.DiaSemana)
+                .WithMany()
+                .HasForeignKey(rd => rd.IdDiaSemana)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<RotinaDiaSemana>()
+                .HasOne(rd => rd.Rotina)
+                .WithMany()
+                .HasForeignKey(rd => rd.IdRotina)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Notificacao>()
+                .HasOne(n => n.Rotina)
+                .WithMany()
+                .HasForeignKey(n => n.IdRotina)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<DiaSemana>().HasData(

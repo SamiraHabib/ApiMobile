@@ -17,6 +17,8 @@ namespace ApiMobile.Models
         public DateTime? DataCriacao { get; set; }
         public DateTime? DataAtualizacao { get; set; }
 
+        public ICollection<RotinaExercicio> Rotinas { get; set; }
+
         public virtual Medico Medico { get; set; }
         [Required]
         [ForeignKey("IdTipoLesao")]
