@@ -23,7 +23,9 @@ namespace ApiMobile.Controllers
             {
                 return NotFound();
             }
-            return await _context.Conteudos.ToListAsync();
+            
+            var conteudos = await _context.Conteudos.Include(c => c.TipoLesao).ToListAsync();
+            return conteudos;
         }
 
         // GET: api/Conteudos/5
