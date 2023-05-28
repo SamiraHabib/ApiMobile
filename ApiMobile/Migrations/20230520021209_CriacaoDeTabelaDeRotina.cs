@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -22,7 +21,7 @@ namespace ApiMobile.Migrations
                     Descricao = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HorarioInicio = table.Column<DateTime>(type: "datetime2", nullable: true),
                     HorarioFim = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Intervalo = table.Column<int>(type: "int", nullable: true),
+                    Intervalo = table.Column<TimeSpan>(type: "time", nullable: true),
                     Ativa = table.Column<bool>(type: "bit", nullable: true)
                 },
                 constraints: table =>

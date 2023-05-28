@@ -14,8 +14,12 @@ namespace ApiMobile.Models
         public DateTime? HorarioInicio { get; set; }
         [TimeOnly]
         public DateTime? HorarioFim { get; set; }
-        public int? Intervalo { get; set; }
+        public TimeSpan? Intervalo { get; set; }
         public bool? Ativa { get; set; }
+
+        public ICollection<RotinaExercicio> Exercicios { get; set; }
+        public ICollection<RotinaDiaSemana> DiasSemana { get; set; }
+        public ICollection<Notificacao> Notificacoes { get; set; }
 
         [ForeignKey("IdPaciente")]
         public virtual Paciente Paciente { get; set; }
