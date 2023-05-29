@@ -48,8 +48,75 @@ namespace ApiMobile.Controllers
             {
                 return NotFound();
             }
-
             return paciente;
+        }
+
+        // GET: api/Pacientes/5/rotinas
+        [HttpGet("{id}/rotinas")]
+        public async Task<ActionResult<IEnumerable<Rotina>>> GetRotinasDoPaciente(int  id)
+        {
+            var rotinasDoPaciente = await _context.Rotina
+                .Where(r => r.IdPaciente == id)
+                .ToListAsync();
+
+            if (rotinasDoPaciente.Count == 0)
+            {
+                return NotFound();
+            }
+            return rotinasDoPaciente;
+        }
+
+        [HttpGet("{id}/rotinas/{idRotina}")]
+        public async Task<ActionResult<Rotina>> GetRotinaDoPaciente(int id, int idRotina)
+        {
+            var rotinaDoPaciente = await _context.Rotina
+                .Where(r => r.IdPaciente == id && r.IdRotina == idRotina)
+                .Include(r => r.Exercicios)
+                .Include(r => r.DiasSemana)
+                .Include(r => r.Notificacoes)
+                .FirstOrDefaultAsync();
+
+            if (rotinaDoPaciente == null)
+            {
+                return NotFound();
+            }
+            return rotinaDoPaciente;
+        }
+
+        [HttpGet("{id}/rotinas/notificacoes")]
+        public async Task<ActionResult<IEnumerable<Notificacao>>> GetNotificacoesDoPaciente(int id, bool? statusRotinas)
+        {
+            var query = _context.Notificacao.Where(n => n.Rotina.IdPaciente == id);
+
+            if (statusRotinas.HasValue)
+            {
+                query = query.Where(n => n.Rotina.Ativa == statusRotinas);
+            }
+
+            var notificacoesDoPaciente = await query
+                .Select(n => new
+                {
+                    n.IdNotificacao,
+                    n.Rotina.IdRotina,
+                    n.Titulo,
+                    n.Mensagem,
+                    n.Hora
+                })
+                .ToListAsync();
+
+            if (notificacoesDoPaciente.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return notificacoesDoPaciente.Select(n => new Notificacao
+            {
+                IdNotificacao = n.IdNotificacao,
+                IdRotina = n.IdRotina,
+                Titulo = n.Titulo,
+                Mensagem = n.Mensagem,
+                Hora = n.Hora
+            }).ToList();
         }
 
         // PUT: api/Pacientes/5

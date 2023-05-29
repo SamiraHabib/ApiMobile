@@ -90,6 +90,23 @@ namespace ApiMobile.Controllers
             return NoContent();
         }
 
+        [HttpPatch("{id}")]
+        public async Task<ActionResult> AtualizarUsuario(int idUsuario, [FromBody] Usuario usuario)
+        {
+            var usuarioExistente = await _context.Usuarios.FindAsync(idUsuario);
+            if (usuarioExistente == null)
+            {
+                return NotFound();
+            }
+
+            usuarioExistente.Nome = usuario.Nome;
+            usuarioExistente.SenhaEncriptada = usuario.SenhaEncriptada;
+
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
         // POST: api/Usuarios
         [HttpPost]
         [AllowAnonymous]

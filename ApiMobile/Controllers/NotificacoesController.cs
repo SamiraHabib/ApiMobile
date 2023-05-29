@@ -78,7 +78,7 @@ namespace ApiMobile.Controllers
         {
             if (_context.Notificacao == null)
             {
-                return Problem("Entity set 'ApiContext.Notificacao'  is null.");
+                return Problem("Entity set 'Notificacao'  is null.");
             }
             _context.Notificacao.Add(notificacao);
             await _context.SaveChangesAsync();
