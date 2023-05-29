@@ -1,3 +1,4 @@
+using System.Security.Authentication;
 using ApiMobile.DTO;
 using ApiMobile.Models;
 using ApiMobile.Services.Interfaces;
@@ -176,10 +177,14 @@ namespace ApiMobile.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> UsuarioLogin([FromBody] Login model)
         {
-            var usuario = await _authService.ValidateCredentials(model.Email, model.Senha);
-            if (usuario == null)
+            Usuario usuario;
+            try
             {
-                return Unauthorized();
+                usuario = await _authService.ValidateCredentials(model.Email, model.Senha);
+            }
+            catch (InvalidCredentialException)
+            {
+                return NotFound();
             }
 
             var authenticatedUser = new UsuarioAutenticado
@@ -192,7 +197,6 @@ namespace ApiMobile.Controllers
             };
 
             var token = _authService.GenerateJwtToken(authenticatedUser);
-
             authenticatedUser.Auth = token;
 
             return Ok(authenticatedUser);
