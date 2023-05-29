@@ -119,6 +119,24 @@ namespace ApiMobile.Controllers
             }).ToList();
         }
 
+        [HttpGet("{idPaciente}/notificacoes")]
+        public async Task<ActionResult<IEnumerable<Notificacao>>> GetNotificacoes(int id)
+        {
+            // Verificar se o paciente existe
+            var paciente = await _context.Pacientes.FindAsync(id);
+            if (paciente == null)
+            {
+                return NotFound();
+            }
+
+            // Obter as notificações do paciente
+            var notificacoes = await _context.Notificacao
+                .Where(n => n.Rotina.Paciente.IdPaciente == id)
+                .ToListAsync();
+
+            return Ok(notificacoes);
+        }
+
         // PUT: api/Pacientes/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPaciente(int id, Paciente paciente)
