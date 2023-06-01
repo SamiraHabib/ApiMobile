@@ -1,6 +1,7 @@
 using ApiMobile.DTO;
 using ApiMobile.Models;
 using ApiMobile.Services.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -14,11 +15,13 @@ namespace ApiMobile.Controllers
     {
         private readonly ApiContext _context;
         private readonly IAuthService _authService;
+        private readonly IMapper _mapper;
 
-        public PacientesController(ApiContext context, IAuthService authService)
+        public PacientesController(ApiContext context, IAuthService authService, IMapper mapper)
         {
             _context = context;
             _authService = authService;
+            _mapper = mapper;
         }
 
         // GET: api/Pacientes
@@ -137,6 +140,24 @@ namespace ApiMobile.Controllers
             return Ok(notificacoes);
         }
 
+        [HttpGet("{id}/rotinas/notificacoes")]
+        public ActionResult<IEnumerable<Notificacao>> GetNotificacoes(int id, bool? statusRotinas)
+        {
+            var query = _context.Notificacao
+                .Where(n => n.Rotina.IdPaciente == id);
+
+            if (statusRotinas.HasValue)
+            {
+                query = query.Where(n => n.Rotina.Ativa == statusRotinas);
+            }
+
+            var notificacoes = query.ToList();
+
+            var notificacoesDto = _mapper.Map<List<NotificacaoDto>>(notificacoes);
+
+            return Ok(notificacoesDto);
+        }
+
         // PUT: api/Pacientes/5
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPaciente(int id, Paciente paciente)
@@ -179,6 +200,26 @@ namespace ApiMobile.Controllers
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetPaciente", new { id = paciente.IdPaciente }, paciente);
+        }
+
+        [HttpPost("{id}/rotinas")]
+        public async Task<ActionResult> CreateRotina(int idPaciente, [FromBody] Rotina model)
+        {
+            var paciente = await _context.Pacientes.FindAsync(idPaciente);
+            if (paciente == null)
+            {
+                return NotFound();
+            }
+
+            var rotina = _mapper.Map<Rotina>(model);
+
+            rotina.IdPaciente = idPaciente;
+            rotina.Paciente = paciente;
+
+            _context.Rotina.Add(rotina);
+            await _context.SaveChangesAsync();
+
+            return Ok(rotina);
         }
 
         // DELETE: api/Pacientes/5
