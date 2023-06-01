@@ -1,5 +1,6 @@
 using ApiMobile.DTO;
 using ApiMobile.Models;
+using ApiMobile.Services;
 using ApiMobile.Services.Interfaces;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
@@ -8,7 +9,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ApiMobile.Controllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class PacientesController : ControllerBase
@@ -16,12 +16,14 @@ namespace ApiMobile.Controllers
         private readonly ApiContext _context;
         private readonly IAuthService _authService;
         private readonly IMapper _mapper;
+        private readonly RotinaPacienteService _rotinaPacienteService;
 
-        public PacientesController(ApiContext context, IAuthService authService, IMapper mapper)
+        public PacientesController(ApiContext context, IAuthService authService, IMapper mapper, RotinaPacienteService rotinaPacienteService)
         {
             _context = context;
             _authService = authService;
             _mapper = mapper;
+            _rotinaPacienteService = rotinaPacienteService;
         }
 
         // GET: api/Pacientes
@@ -56,7 +58,7 @@ namespace ApiMobile.Controllers
 
         // GET: api/Pacientes/5/rotinas
         [HttpGet("{id}/rotinas")]
-        public async Task<ActionResult<IEnumerable<Rotina>>> GetRotinasDoPaciente(int  id)
+        public async Task<ActionResult<IEnumerable<Rotina>>> GetAllRotinasDoPaciente(int id)
         {
             var rotinasDoPaciente = await _context.Rotina
                 .Where(r => r.IdPaciente == id)
@@ -69,79 +71,35 @@ namespace ApiMobile.Controllers
             return rotinasDoPaciente;
         }
 
+        // GET: api/Pacientes/5/rotinas/1
         [HttpGet("{id}/rotinas/{idRotina}")]
         public async Task<ActionResult<Rotina>> GetRotinaDoPaciente(int id, int idRotina)
         {
-            var rotinaDoPaciente = await _context.Rotina
-                .Where(r => r.IdPaciente == id && r.IdRotina == idRotina)
-                .Include(r => r.Exercicios)
-                .Include(r => r.DiasSemana)
-                .Include(r => r.Notificacoes)
-                .FirstOrDefaultAsync();
+            var rotinaDoPaciente = await _rotinaPacienteService.GetRotinaDoPaciente(id, idRotina);
 
-            if (rotinaDoPaciente == null)
-            {
-                return NotFound();
-            }
-            return rotinaDoPaciente;
+            var rotinaDto = _mapper.Map<RotinaDto>(rotinaDoPaciente);
+
+            return Ok(rotinaDto);
         }
 
-        [HttpGet("{id}/rotinas/notificacoes")]
-        public async Task<ActionResult<IEnumerable<Notificacao>>> GetNotificacoesDoPaciente(int id, bool? statusRotinas)
+        [HttpGet("{id}/notificacoes")]
+        public async Task<ActionResult<IEnumerable<Notificacao>>> GetAllNotificacoes(int id)
         {
-            var query = _context.Notificacao.Where(n => n.Rotina.IdPaciente == id);
-
-            if (statusRotinas.HasValue)
-            {
-                query = query.Where(n => n.Rotina.Ativa == statusRotinas);
-            }
-
-            var notificacoesDoPaciente = await query
-                .Select(n => new
-                {
-                    n.IdNotificacao,
-                    n.Rotina.IdRotina,
-                    n.Titulo,
-                    n.Mensagem,
-                    n.Hora
-                })
-                .ToListAsync();
-
-            if (notificacoesDoPaciente.Count == 0)
-            {
-                return NotFound();
-            }
-
-            return notificacoesDoPaciente.Select(n => new Notificacao
-            {
-                IdNotificacao = n.IdNotificacao,
-                IdRotina = n.IdRotina,
-                Titulo = n.Titulo,
-                Mensagem = n.Mensagem,
-                Hora = n.Hora
-            }).ToList();
-        }
-
-        [HttpGet("{idPaciente}/notificacoes")]
-        public async Task<ActionResult<IEnumerable<Notificacao>>> GetNotificacoes(int id)
-        {
-            // Verificar se o paciente existe
             var paciente = await _context.Pacientes.FindAsync(id);
             if (paciente == null)
             {
                 return NotFound();
             }
 
-            // Obter as notificações do paciente
             var notificacoes = await _context.Notificacao
-                .Where(n => n.Rotina.Paciente.IdPaciente == id)
+                .Where(n => n.Rotina.IdPaciente == id)
                 .ToListAsync();
 
             return Ok(notificacoes);
         }
 
         [HttpGet("{id}/rotinas/notificacoes")]
-        public ActionResult<IEnumerable<Notificacao>> GetNotificacoes(int id, bool? statusRotinas)
+        public ActionResult<IEnumerable<Notificacao>> GetNotificacoesDaRotina(int id, bool? statusRotinas)
         {
             var query = _context.Notificacao
                 .Where(n => n.Rotina.IdPaciente == id);
@@ -194,7 +152,7 @@ namespace ApiMobile.Controllers
         {
             if (_context.Pacientes == null)
             {
-                return Problem("Entity set 'ApiContext.Pacientes'  is null.");
+                return Problem("Entity set 'Pacientes'  is null.");
             }
             _context.Pacientes.Add(paciente);
             await _context.SaveChangesAsync();
@@ -203,7 +161,7 @@ namespace ApiMobile.Controllers
         }
 
         [HttpPost("{id}/rotinas")]
-        public async Task<ActionResult> CreateRotina(int idPaciente, [FromBody] Rotina model)
+        public async Task<ActionResult> CreateRotinaDoPaciente(int idPaciente, [FromBody] Rotina model)
         {
             var paciente = await _context.Pacientes.FindAsync(idPaciente);
             if (paciente == null)
