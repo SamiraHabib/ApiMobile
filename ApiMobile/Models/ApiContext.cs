@@ -116,6 +116,12 @@ namespace ApiMobile.Models
                 .HasForeignKey(n => n.IdRotina)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Notificacao>()
+                .HasOne(n => n.Exercicio)
+                .WithMany()
+                .HasForeignKey(n => n.IdExercicio)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<DiaSemana>().HasData(
               new DiaSemana { IdDiaSemana = 1, Nome = "Domingo" },
               new DiaSemana { IdDiaSemana = 2, Nome = "Segunda-feira" }, 
