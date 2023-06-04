@@ -91,7 +91,7 @@ namespace ApiMobile.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{idUsuario}")]
         public async Task<ActionResult> AtualizarUsuario(int idUsuario, [FromBody] Usuario usuario)
         {
             var usuarioExistente = await _context.Usuarios.FindAsync(idUsuario);
