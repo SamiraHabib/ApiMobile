@@ -101,7 +101,7 @@ namespace ApiMobile.Controllers
             }
 
             usuarioExistente.Nome = usuario.Nome;
-            usuarioExistente.SenhaEncriptada = usuario.SenhaEncriptada;
+            usuarioExistente.SenhaEncriptada = BCrypt.Net.BCrypt.HashPassword(usuario.SenhaEncriptada);
 
             await _context.SaveChangesAsync();
 
