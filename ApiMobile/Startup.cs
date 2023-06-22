@@ -58,8 +58,8 @@ namespace ApiMobile
             });
 
             services.AddHttpClient();
-            services.AddSingleton<ICRMApiService, CRMApiService>();
-            services.AddScoped<IAuthService, AuthService>() ;
+            services.AddSingleton<ICRMApiService, FakeCrmApiService>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
             services.AddScoped<RotinaPacienteService>();
 

@@ -91,7 +91,7 @@ namespace ApiMobile.Controllers
             return NoContent();
         }
 
-        [HttpPatch("{id}")]
+        [HttpPatch("{idUsuario}")]
         public async Task<ActionResult> AtualizarUsuario(int idUsuario, [FromBody] Usuario usuario)
         {
             var usuarioExistente = await _context.Usuarios.FindAsync(idUsuario);
@@ -101,7 +101,7 @@ namespace ApiMobile.Controllers
             }
 
             usuarioExistente.Nome = usuario.Nome;
-            usuarioExistente.SenhaEncriptada = usuario.SenhaEncriptada;
+            usuarioExistente.SenhaEncriptada = BCrypt.Net.BCrypt.HashPassword(usuario.SenhaEncriptada);
 
             await _context.SaveChangesAsync();
 

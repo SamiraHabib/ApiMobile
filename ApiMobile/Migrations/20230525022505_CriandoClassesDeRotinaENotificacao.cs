@@ -10,14 +10,22 @@ namespace ApiMobile.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AlterColumn<TimeSpan>(
-                name: "Intervalo",
+            migrationBuilder.AddColumn<string>(
+                name: "IntervaloTemp",
                 table: "rotina",
-                type: "time",
-                nullable: true,
-                oldClrType: typeof(int),
-                oldType: "int",
-                oldNullable: true);
+                type: "varchar(8)", // Adjust the data type as per your database
+                nullable: true);
+
+            migrationBuilder.Sql("UPDATE rotina SET IntervaloTemp = CONCAT('00:', RIGHT('00' + CAST(Intervalo AS varchar), 2), ':00')");
+
+            migrationBuilder.DropColumn(
+                name: "Intervalo",
+                table: "rotina");
+
+            migrationBuilder.RenameColumn(
+                name: "IntervaloTemp",
+                table: "rotina",
+                newName: "Intervalo");
 
             migrationBuilder.CreateTable(
                 name: "notificacao",
