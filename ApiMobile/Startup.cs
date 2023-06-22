@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
+using ApiMobile.Mappers;
+using AutoMapper;
 
 namespace ApiMobile
 {
@@ -57,8 +59,18 @@ namespace ApiMobile
 
             services.AddHttpClient();
             services.AddSingleton<ICRMApiService, CRMApiService>();
-            services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IAuthService, AuthService>() ;
             services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
+            services.AddScoped<RotinaPacienteService>();
+
+            var mappingConfig = new MapperConfiguration(mc =>
+            {
+                mc.AddProfile(new RotinaDiaSemanaProfile());
+                mc.AddProfile(new RotinaExercicioProfile());
+                mc.AddProfile(new RotinaProfile());
+            });
+            IMapper mapper = mappingConfig.CreateMapper();
+            services.AddSingleton(mapper);
 
             // Adiciona o DbContext ao contêiner
             // Obtenha a string de conexão do arquivo appsettings.json
