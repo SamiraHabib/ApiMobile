@@ -11,8 +11,8 @@ namespace ApiMobile.Models
         public int IdDiaSemana { get; set; }
 
         [ForeignKey("IdRotina")]
-        public Rotina Rotina { get; set; }
+        public Rotina? Rotina { get; set; }
         [ForeignKey("IdDiaSemana")]
-        public DiaSemana DiaSemana { get; set; }
+        public DiaSemana? DiaSemana { get; set; }
     }
 }

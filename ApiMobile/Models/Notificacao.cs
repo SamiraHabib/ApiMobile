@@ -10,7 +10,7 @@
         public DateTime Hora { get; set; }
         public bool? Enviado { get; set; }
 
-        public Rotina Rotina { get; set; }
-        public Exercicio Exercicio { get; set; }
+        public Rotina? Rotina { get; set; }
+        public Exercicio? Exercicio { get; set; }
     }
 }

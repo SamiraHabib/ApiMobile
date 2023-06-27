@@ -9,7 +9,7 @@ namespace ApiMobile.Models
         [Required]
         public int IdExercicio { get; set; }
 
-        public Rotina Rotina { get; set; }
-        public Exercicio Exercicio { get; set; }
+        public Rotina? Rotina { get; set; }
+        public Exercicio? Exercicio { get; set; }
     }
 }

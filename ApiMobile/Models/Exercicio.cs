@@ -16,12 +16,10 @@ namespace ApiMobile.Models
         public string? Observacoes { get; set; }
         public DateTime? DataCriacao { get; set; }
         public DateTime? DataAtualizacao { get; set; }
+        public ICollection<RotinaExercicio>? Rotinas { get; set; }
 
-        public ICollection<RotinaExercicio> Rotinas { get; set; }
-
-        public virtual Medico Medico { get; set; }
-        [Required]
+        public virtual Medico? Medico { get; set; }
         [ForeignKey("IdTipoLesao")]
-        public virtual TipoLesao TipoLesao { get; set; }
+        public virtual TipoLesao? TipoLesao { get; set; }
     }
 }
