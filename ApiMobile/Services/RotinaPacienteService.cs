@@ -22,7 +22,7 @@ namespace ApiMobile.Services
             var rotinaDoPaciente = _context.Rotina
                 .Where(r => r.IdPaciente == idPaciente && r.IdRotina == idRotina)
                 .Include(r => r.Exercicios)
-                .Include(r => r.DiasSemana)
+                .Include(r => r.RotinaDiaSemanas)
                 .Include(r => r.Notificacoes)
                 .ProjectTo<RotinaDto>(_mapper.ConfigurationProvider)
                 .FirstOrDefault();

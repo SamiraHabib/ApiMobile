@@ -161,9 +161,9 @@ namespace ApiMobile.Controllers
         }
 
         [HttpPost("{id}/rotinas")]
-        public async Task<ActionResult> CreateRotinaDoPaciente(int idPaciente, [FromBody] Rotina model)
+        public async Task<ActionResult> CreateRotinaDoPaciente(int id, [FromBody] Rotina model)
         {
-            var paciente = await _context.Pacientes.FindAsync(idPaciente);
+            var paciente = await _context.Pacientes.FindAsync(id);
             if (paciente == null)
             {
                 return NotFound();
@@ -171,9 +171,10 @@ namespace ApiMobile.Controllers
 
             var rotina = _mapper.Map<Rotina>(model);
 
-            rotina.IdPaciente = idPaciente;
+            rotina.IdPaciente = id;
             rotina.Paciente = paciente;
 
+            _context.Pacientes.Attach(paciente);
             _context.Rotina.Add(rotina);
             await _context.SaveChangesAsync();
 

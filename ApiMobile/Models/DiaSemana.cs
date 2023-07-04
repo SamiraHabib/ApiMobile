@@ -5,6 +5,7 @@
         public int IdDiaSemana { get; set; }
         public string Nome { get; set; }
 
-        public ICollection<RotinaDiaSemana> Rotinas { get; set; }
+        public List<RotinaDiaSemana>? RotinasDiaSemanas { get; set; } = new();
+        public List<Rotina> Rotinas { get; } = new();
     }
 }

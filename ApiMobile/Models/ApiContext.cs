@@ -86,30 +86,6 @@ namespace ApiMobile.Models
                 .HasForeignKey(r => r.IdPaciente)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<RotinaExercicio>()
-                .HasOne(re => re.Exercicio)
-                .WithMany()
-                .HasForeignKey(re => re.IdExercicio)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<RotinaExercicio>()
-                .HasOne(re => re.Rotina)
-                .WithMany()
-                .HasForeignKey(re => re.IdRotina)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<RotinaDiaSemana>()
-                .HasOne(rd => rd.DiaSemana)
-                .WithMany()
-                .HasForeignKey(rd => rd.IdDiaSemana)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<RotinaDiaSemana>()
-                .HasOne(rd => rd.Rotina)
-                .WithMany()
-                .HasForeignKey(rd => rd.IdRotina)
-                .OnDelete(DeleteBehavior.Restrict);
-
             modelBuilder.Entity<Notificacao>()
                 .HasOne(n => n.Rotina)
                 .WithMany()
@@ -121,6 +97,11 @@ namespace ApiMobile.Models
                 .WithMany()
                 .HasForeignKey(n => n.IdExercicio)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Rotina>()
+                .HasMany(e => e.DiaSemanas)
+                .WithMany(e => e.Rotinas)
+                .UsingEntity<RotinaDiaSemana>();
 
             modelBuilder.Entity<DiaSemana>().HasData(
               new DiaSemana { IdDiaSemana = 1, Nome = "Domingo" },

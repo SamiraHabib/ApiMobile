@@ -17,9 +17,10 @@ namespace ApiMobile.Models
         public TimeSpan? Intervalo { get; set; }
         public bool? Ativa { get; set; }
 
-        public ICollection<RotinaExercicio>? Exercicios { get; set; }
-        public ICollection<RotinaDiaSemana>? DiasSemana { get; set; }
-        public ICollection<Notificacao>? Notificacoes { get; set; }
+        public List<RotinaExercicio>? Exercicios { get; } = new();
+        public List<RotinaDiaSemana>? RotinaDiaSemanas { get; } = new();
+        public List<DiaSemana> DiaSemanas { get; } = new ();
+        public List<Notificacao>? Notificacoes { get; } = new();
 
         [ForeignKey("IdPaciente")]
         public virtual Paciente? Paciente { get; set; }
