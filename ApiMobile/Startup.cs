@@ -1,14 +1,15 @@
-﻿using ApiMobile.Models;
+﻿//using ApiMobile.Filters;
+using ApiMobile.Mappers;
+using ApiMobile.Models;
 using ApiMobile.Repositorios;
 using ApiMobile.Services;
 using ApiMobile.Services.Interfaces;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using ApiMobile.Mappers;
-using AutoMapper;
 
 namespace ApiMobile
 {
@@ -119,6 +120,10 @@ namespace ApiMobile
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ApiMobile v1"));
             }
+
+            //app.UseMiddleware<ErrorHandlingMiddleware>();
+
+            //app.UseExceptionHandler("/error");
 
             app.UseHttpsRedirection();
 

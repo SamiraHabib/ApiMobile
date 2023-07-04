@@ -1,5 +1,8 @@
-﻿using ApiMobile.Models;
+﻿using ApiMobile.DTO;
+using ApiMobile.Models;
 using ApiMobile.Services.Interfaces;
+using AutoMapper.QueryableExtensions;
+using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 
 namespace ApiMobile.Services
@@ -7,22 +10,24 @@ namespace ApiMobile.Services
     public class RotinaPacienteService : IRotinaPacienteService
     {
         private readonly ApiContext _context;
+        private readonly IMapper _mapper;
 
         public RotinaPacienteService(ApiContext context)
         {
             _context = context;
         }
 
-        public async Task<Rotina?> GetRotinaDoPaciente(int idPaciente, int idRotina)
+        public Task<RotinaDto?> GetRotinaDoPaciente(int idPaciente, int idRotina)
         {
-            var rotinaDoPaciente = await _context.Rotina
+            var rotinaDoPaciente = _context.Rotina
                 .Where(r => r.IdPaciente == idPaciente && r.IdRotina == idRotina)
                 .Include(r => r.Exercicios)
                 .Include(r => r.DiasSemana)
                 .Include(r => r.Notificacoes)
-                .FirstOrDefaultAsync();
+                .ProjectTo<RotinaDto>(_mapper.ConfigurationProvider)
+                .FirstOrDefault();
 
-            return rotinaDoPaciente;
+            return Task.FromResult(rotinaDoPaciente);
         }
     }
 }
