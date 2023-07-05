@@ -70,6 +70,10 @@ namespace ApiMobile.Controllers
                 return BadRequest();
             }
 
+            usuario.IdMedico = usuario.Medico?.IdMedico;
+            usuario.IdPaciente = usuario.Paciente?.IdPaciente;
+            usuario.SenhaEncriptada = BCrypt.Net.BCrypt.HashPassword(usuario.SenhaEncriptada);
+
             _context.Entry(usuario).State = EntityState.Modified;
 
             try
@@ -88,7 +92,7 @@ namespace ApiMobile.Controllers
                 }
             }
 
-            return NoContent();
+            return CreatedAtAction("PutUsuario", usuario);
         }
 
         [HttpPatch("{idUsuario}")]
