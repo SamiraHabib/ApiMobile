@@ -3,6 +3,7 @@ using ApiMobile.Models;
 using ApiMobile.Services;
 using ApiMobile.Services.Interfaces;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -60,9 +61,7 @@ namespace ApiMobile.Controllers
         [HttpGet("{id}/rotinas")]
         public async Task<ActionResult<IEnumerable<Rotina>>> GetAllRotinasDoPaciente(int id)
         {
-            var rotinasDoPaciente = await _context.Rotina
-                .Where(r => r.IdPaciente == id)
-                .ToListAsync();
+            var rotinasDoPaciente = await _rotinaPacienteService.GetAllRotinasDoPaciente(id);
 
             if (rotinasDoPaciente.Count == 0)
             {

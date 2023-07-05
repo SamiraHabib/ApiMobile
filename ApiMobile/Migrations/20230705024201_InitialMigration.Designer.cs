@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiMobile.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20230525022505_CriandoClassesDeRotinaENotificacao")]
-    partial class CriandoClassesDeRotinaENotificacao
+    [Migration("20230705024201_InitialMigration")]
+    partial class InitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -116,7 +116,7 @@ namespace ApiMobile.Migrations
                         new
                         {
                             IdDiaSemana = 7,
-                            Nome = "Sábado"
+                            Nome = "S�bado"
                         });
                 });
 
@@ -199,11 +199,14 @@ namespace ApiMobile.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("IdNotificacao"));
 
-                    b.Property<bool>("Enviado")
+                    b.Property<bool?>("Enviado")
                         .HasColumnType("bit");
 
                     b.Property<DateTime>("Hora")
                         .HasColumnType("datetime2");
+
+                    b.Property<int>("IdExercicio")
+                        .HasColumnType("int");
 
                     b.Property<int>("IdRotina")
                         .HasColumnType("int");
@@ -220,6 +223,8 @@ namespace ApiMobile.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("IdNotificacao");
+
+                    b.HasIndex("IdExercicio");
 
                     b.HasIndex("IdRotina");
 
@@ -289,19 +294,9 @@ namespace ApiMobile.Migrations
                     b.Property<int>("IdDiaSemana")
                         .HasColumnType("int");
 
-                    b.Property<int?>("DiaSemanaIdDiaSemana")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RotinaIdRotina")
-                        .HasColumnType("int");
-
                     b.HasKey("IdRotina", "IdDiaSemana");
 
-                    b.HasIndex("DiaSemanaIdDiaSemana");
-
                     b.HasIndex("IdDiaSemana");
-
-                    b.HasIndex("RotinaIdRotina");
 
                     b.ToTable("rotinaDiaSemana", (string)null);
                 });
@@ -314,19 +309,9 @@ namespace ApiMobile.Migrations
                     b.Property<int>("IdExercicio")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ExercicioIdExercicio")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RotinaIdRotina")
-                        .HasColumnType("int");
-
                     b.HasKey("IdRotina", "IdExercicio");
 
-                    b.HasIndex("ExercicioIdExercicio");
-
                     b.HasIndex("IdExercicio");
-
-                    b.HasIndex("RotinaIdRotina");
 
                     b.ToTable("rotinaExercicio", (string)null);
                 });
@@ -445,6 +430,12 @@ namespace ApiMobile.Migrations
 
             modelBuilder.Entity("ApiMobile.Models.Notificacao", b =>
                 {
+                    b.HasOne("ApiMobile.Models.Exercicio", "Exercicio")
+                        .WithMany()
+                        .HasForeignKey("IdExercicio")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
                     b.HasOne("ApiMobile.Models.Rotina", "Rotina")
                         .WithMany()
                         .HasForeignKey("IdRotina")
@@ -454,6 +445,8 @@ namespace ApiMobile.Migrations
                     b.HasOne("ApiMobile.Models.Rotina", null)
                         .WithMany("Notificacoes")
                         .HasForeignKey("RotinaIdRotina");
+
+                    b.Navigation("Exercicio");
 
                     b.Navigation("Rotina");
                 });
@@ -471,25 +464,17 @@ namespace ApiMobile.Migrations
 
             modelBuilder.Entity("ApiMobile.Models.RotinaDiaSemana", b =>
                 {
-                    b.HasOne("ApiMobile.Models.DiaSemana", null)
-                        .WithMany("Rotinas")
-                        .HasForeignKey("DiaSemanaIdDiaSemana");
-
                     b.HasOne("ApiMobile.Models.DiaSemana", "DiaSemana")
-                        .WithMany()
+                        .WithMany("RotinasDiaSemanas")
                         .HasForeignKey("IdDiaSemana")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApiMobile.Models.Rotina", "Rotina")
-                        .WithMany()
+                        .WithMany("RotinaDiaSemanas")
                         .HasForeignKey("IdRotina")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("ApiMobile.Models.Rotina", null)
-                        .WithMany("DiasSemana")
-                        .HasForeignKey("RotinaIdRotina");
 
                     b.Navigation("DiaSemana");
 
@@ -498,25 +483,17 @@ namespace ApiMobile.Migrations
 
             modelBuilder.Entity("ApiMobile.Models.RotinaExercicio", b =>
                 {
-                    b.HasOne("ApiMobile.Models.Exercicio", null)
-                        .WithMany("Rotinas")
-                        .HasForeignKey("ExercicioIdExercicio");
-
                     b.HasOne("ApiMobile.Models.Exercicio", "Exercicio")
-                        .WithMany()
+                        .WithMany("Rotinas")
                         .HasForeignKey("IdExercicio")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("ApiMobile.Models.Rotina", "Rotina")
-                        .WithMany()
-                        .HasForeignKey("IdRotina")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("ApiMobile.Models.Rotina", null)
                         .WithMany("Exercicios")
-                        .HasForeignKey("RotinaIdRotina");
+                        .HasForeignKey("IdRotina")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Exercicio");
 
@@ -553,7 +530,7 @@ namespace ApiMobile.Migrations
 
             modelBuilder.Entity("ApiMobile.Models.DiaSemana", b =>
                 {
-                    b.Navigation("Rotinas");
+                    b.Navigation("RotinasDiaSemanas");
                 });
 
             modelBuilder.Entity("ApiMobile.Models.Exercicio", b =>
@@ -563,11 +540,11 @@ namespace ApiMobile.Migrations
 
             modelBuilder.Entity("ApiMobile.Models.Rotina", b =>
                 {
-                    b.Navigation("DiasSemana");
-
                     b.Navigation("Exercicios");
 
                     b.Navigation("Notificacoes");
+
+                    b.Navigation("RotinaDiaSemanas");
                 });
 #pragma warning restore 612, 618
         }

@@ -29,5 +29,18 @@ namespace ApiMobile.Services
 
             return Task.FromResult(rotinaDoPaciente);
         }
+
+        public async Task<List<Rotina>> GetAllRotinasDoPaciente(int idPaciente)
+        {
+            var rotinaDoPaciente = await _context.Rotina
+                .Where(r => r.IdPaciente == idPaciente)
+                .Include(r => r.Exercicios)
+                .Include(r => r.DiaSemanas)
+                .Include(r => r.Notificacoes)
+                .ProjectTo<Rotina>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+
+            return rotinaDoPaciente;
+        }
     }
 }

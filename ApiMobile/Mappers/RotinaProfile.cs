@@ -8,13 +8,13 @@ namespace ApiMobile.Mappers
     {
         public RotinaProfile()
         {
-            CreateMap<Rotina, RotinaDto>()
+            CreateMap<Rotina, Rotina>()
                 .ForMember(dest => dest.Exercicios, opt => opt
                     .MapFrom(src => src.Exercicios))
-                .ForMember(dest => dest.DiasSemana, opt => opt
+                .ForMember(dest => dest.DiaSemanas, opt => opt
                     .MapFrom(src => src.RotinaDiaSemanas.Select(rds => rds.Rotina)));
 
-            CreateMap<RotinaDto, Rotina>();
+            CreateMap<Rotina, Rotina>();
         }
     }
 }

@@ -306,17 +306,9 @@ namespace ApiMobile.Migrations
                     b.Property<int>("IdExercicio")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ExercicioIdExercicio")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("RotinaIdRotina")
-                        .HasColumnType("int");
-
                     b.HasKey("IdRotina", "IdExercicio");
 
-                    b.HasIndex("ExercicioIdExercicio");
-
-                    b.HasIndex("RotinaIdRotina");
+                    b.HasIndex("IdExercicio");
 
                     b.ToTable("rotinaExercicio", (string)null);
                 });
@@ -490,11 +482,15 @@ namespace ApiMobile.Migrations
                 {
                     b.HasOne("ApiMobile.Models.Exercicio", "Exercicio")
                         .WithMany("Rotinas")
-                        .HasForeignKey("ExercicioIdExercicio");
+                        .HasForeignKey("IdExercicio")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("ApiMobile.Models.Rotina", "Rotina")
                         .WithMany("Exercicios")
-                        .HasForeignKey("RotinaIdRotina");
+                        .HasForeignKey("IdRotina")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Exercicio");
 
