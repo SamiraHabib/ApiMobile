@@ -25,7 +25,9 @@ namespace ApiMobile
         public void ConfigureServices(IServiceCollection services)
         {
             // Adiciona serviços ao contêiner.
-            services.AddControllers();
+            services.AddControllers()
+                .AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling =
+                Newtonsoft.Json.ReferenceLoopHandling.Ignore);
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {

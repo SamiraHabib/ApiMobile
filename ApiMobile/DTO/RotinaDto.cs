@@ -12,8 +12,8 @@ namespace ApiMobile.DTO
         public TimeSpan? HorarioFim { get; set; }
         public TimeSpan? Intervalo { get; set; }
         public bool? Ativa { get; set; }
-        public ICollection<RotinaExercicio> Exercicios { get; set; }
-        public ICollection<RotinaDiaSemana> DiasSemana { get; set; }
-        public ICollection<NotificacaoDto> Notificacoes { get; set; }
+        public List<RotinaExercicio> Exercicios { get; set; }
+        public List<RotinaDiaSemana> DiasSemana { get; set; }
+        public List<NotificacaoDto> Notificacoes { get; set; }
     }
 }

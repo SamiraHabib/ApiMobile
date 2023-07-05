@@ -14,13 +14,14 @@ namespace ApiMobile.Models
         public DateTime? HorarioInicio { get; set; }
         [TimeOnly]
         public DateTime? HorarioFim { get; set; }
+        [Column(TypeName = "time")]
         public TimeSpan? Intervalo { get; set; }
         public bool? Ativa { get; set; }
 
-        public List<RotinaExercicio>? Exercicios { get; } = new();
-        public List<RotinaDiaSemana>? RotinaDiaSemanas { get; } = new();
-        public List<DiaSemana> DiaSemanas { get; } = new ();
-        public List<Notificacao>? Notificacoes { get; } = new();
+        public List<RotinaExercicio>? Exercicios { get; set; }
+        public List<RotinaDiaSemana>? RotinaDiaSemanas { get; set; }
+        public List<DiaSemana>? DiaSemanas { get; set; }
+        public List<Notificacao>? Notificacoes { get; set; }
 
         [ForeignKey("IdPaciente")]
         public virtual Paciente? Paciente { get; set; }

@@ -174,7 +174,6 @@ namespace ApiMobile.Controllers
             rotina.IdPaciente = id;
             rotina.Paciente = paciente;
 
-            _context.Pacientes.Attach(paciente);
             _context.Rotina.Add(rotina);
             await _context.SaveChangesAsync();
 

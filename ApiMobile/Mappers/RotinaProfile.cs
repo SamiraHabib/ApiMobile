@@ -12,7 +12,7 @@ namespace ApiMobile.Mappers
                 .ForMember(dest => dest.Exercicios, opt => opt
                     .MapFrom(src => src.Exercicios))
                 .ForMember(dest => dest.DiasSemana, opt => opt
-                    .MapFrom(src => src.RotinaDiaSemanas));
+                    .MapFrom(src => src.RotinaDiaSemanas.Select(rds => rds.Rotina)));
 
             CreateMap<RotinaDto, Rotina>();
         }
