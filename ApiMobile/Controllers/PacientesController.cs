@@ -169,13 +169,26 @@ namespace ApiMobile.Controllers
             }
 
             var rotina = _mapper.Map<Rotina>(model);
+            var notificacoes = rotina.Notificacoes;
 
             rotina.IdPaciente = id;
             rotina.Paciente = paciente;
+            rotina.Notificacoes = null;
 
-            _context.Rotina.Add(rotina);
+            await _context.Rotina.AddAsync(rotina);
             await _context.SaveChangesAsync();
 
+            if (notificacoes != null)
+            {
+                foreach (var notificacao in notificacoes)
+                {
+                    notificacao.IdRotina = rotina.IdRotina;
+                }
+                await _context.Notificacao.AddRangeAsync(notificacoes);
+                await _context.SaveChangesAsync();
+            }
+
+            rotina.Notificacoes = notificacoes;
             return Ok(rotina);
         }
 
