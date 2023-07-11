@@ -7,7 +7,7 @@
         public int IdExercicio { get; set; }
         public string Titulo { get; set; }
         public string Mensagem { get; set; }
-        public string Hora { get; set; }
+        public DateTime Hora { get; set; }
         public bool? Enviado { get; set; }
     }
 }

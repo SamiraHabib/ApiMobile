@@ -63,11 +63,12 @@ namespace ApiMobile.Controllers
         {
             var rotinasDoPaciente = await _rotinaPacienteService.GetAllRotinasDoPaciente(id);
 
-            if (rotinasDoPaciente.Count == 0)
+            if (rotinasDoPaciente == null)
             {
                 return NotFound();
             }
-            return rotinasDoPaciente;
+
+            return rotinasDoPaciente.ToList();
         }
 
         // GET: api/Pacientes/5/rotinas/1
