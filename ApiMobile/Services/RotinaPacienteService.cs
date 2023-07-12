@@ -30,7 +30,7 @@ namespace ApiMobile.Services
             return Task.FromResult(rotinaDoPaciente);
         }
 
-        public async Task<IEnumerable<Rotina>> GetAllRotinasDoPaciente(int idPaciente)
+        public async Task<List<Rotina>> GetAllRotinasDoPaciente(int idPaciente)
         {
             var rotinaDoPaciente = await _context.Rotina
                 .Where(r => r.IdPaciente == idPaciente)

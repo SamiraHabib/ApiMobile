@@ -68,7 +68,7 @@ namespace ApiMobile.Controllers
                 return NotFound();
             }
 
-            return rotinasDoPaciente.ToList();
+            return Ok(rotinasDoPaciente);
         }
 
         // GET: api/Pacientes/5/rotinas/1
