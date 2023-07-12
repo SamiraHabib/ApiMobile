@@ -59,7 +59,7 @@ namespace ApiMobile.Controllers
 
         // GET: api/Pacientes/5/rotinas
         [HttpGet("{id}/rotinas")]
-        public async Task<ActionResult<IEnumerable<Rotina>>> GetAllRotinasDoPaciente(int id)
+        public async Task<ActionResult> GetAllRotinasDoPaciente(int id)
         {
             var rotinasDoPaciente = await _rotinaPacienteService.GetAllRotinasDoPaciente(id);
 

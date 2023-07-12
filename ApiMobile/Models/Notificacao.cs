@@ -1,7 +1,11 @@
-﻿namespace ApiMobile.Models
+﻿using System.ComponentModel.DataAnnotations;
+using ApiMobile.DTO;
+
+namespace ApiMobile.Models
 {
     public class Notificacao
     {
+        [Key]
         public int IdNotificacao { get; set; }
         public int? IdRotina { get; set; }
         public int IdExercicio { get; set; }

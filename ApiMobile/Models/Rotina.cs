@@ -18,7 +18,7 @@ namespace ApiMobile.Models
         public TimeSpan? Intervalo { get; set; }
         public bool? Ativa { get; set; }
 
-        public List<RotinaExercicio>? Exercicios { get; set; }
+        public List<RotinaExercicio>? RotinaExercicios { get; set; }
         public List<RotinaDiaSemana>? RotinaDiaSemanas { get; set; }
         public List<DiaSemana>? DiaSemanas { get; set; }
         public List<Notificacao>? Notificacoes { get; set; }

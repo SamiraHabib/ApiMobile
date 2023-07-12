@@ -1,4 +1,5 @@
-﻿using ApiMobile.Models;
+﻿using ApiMobile.DTO;
+using ApiMobile.Models;
 using AutoMapper;
 
 namespace ApiMobile.Mappers
@@ -7,7 +8,12 @@ namespace ApiMobile.Mappers
     {
         public RotinaExercicioProfile()
         {
-            CreateMap<RotinaExercicio, RotinaExercicio>();
+            CreateMap<RotinaExercicio, RotinaExercicioDto>()
+                .ForMember(dest => dest.IdExercicio, opt => opt
+                    .MapFrom(src => src.IdExercicio))
+                .ForMember(dest => dest.IdRotina, opt => opt
+                    .MapFrom(src => src.IdRotina));
+            CreateMap<RotinaExercicioDto, RotinaExercicio>();
         }
     }
 }
