@@ -92,7 +92,7 @@ namespace ApiMobile.Controllers
                 }
             }
 
-            return CreatedAtAction("PutUsuario", usuario);
+            return NoContent();
         }
 
         [HttpPatch("{idUsuario}")]
