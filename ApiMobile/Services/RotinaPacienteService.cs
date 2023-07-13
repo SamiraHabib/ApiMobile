@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using ApiMobile.DTO;
+﻿using ApiMobile.DTO;
 using ApiMobile.Models;
 using ApiMobile.Services.Interfaces;
 using AutoMapper;
@@ -34,52 +33,80 @@ namespace ApiMobile.Services
 
         public async Task<List<RotinaDto>> GetAllRotinasDoPaciente(int idPaciente)
         {
-            var rotinaDoPaciente = _context.Rotina
+            var rotinaDoPaciente = await _context.Rotina
                 .Where(r => r.IdPaciente == idPaciente)
+                .Select(r => new RotinaDto()
+                {
+                    IdRotina = r.IdRotina,
+                    Titulo = r.Titulo,
+                    Descricao = r.Descricao,
+                    HorarioInicio = r.HorarioInicio,
+                    HorarioFim = r.HorarioFim,
+                    Intervalo = r.Intervalo,
+                    Ativa = r.Ativa,
+                    RotinaDiaSemanas = (r.RotinaDiaSemanas).Select(d =>
+                        new RotinaDiaSemanaDto
+                        {
+                            IdRotina = d.IdRotina,
+                            IdDiaSemana = d.IdDiaSemana
+                        }).ToList()
+                })
                 .ToListAsync();
 
-            var rotinasDto = new List<RotinaDto>();
+            //Rotina Exercicio
+            var rotinaIds = rotinaDoPaciente.Select(r => r.IdRotina).ToList();
 
-            foreach (var rotina in await rotinaDoPaciente)
+            var rotinasComExercicios = await _context.Rotina
+                .Include(r => r.RotinaExercicios)
+                .ThenInclude(re => re.Exercicio)
+                .Where(r => rotinaIds.Contains(r.IdRotina))
+                .ToListAsync();
+
+            foreach (var rotina in rotinaDoPaciente)
             {
-                var rotinaDto = new RotinaDto
+                var rotinaComExercicios = rotinasComExercicios.FirstOrDefault(r => r.IdRotina == rotina.IdRotina);
+                if (rotinaComExercicios != null)
                 {
-                    IdRotina = rotina.IdRotina,
-                    Titulo = rotina.Titulo,
-                    Descricao = rotina.Descricao,
-                    HorarioInicio = rotina.HorarioInicio,
-                    HorarioFim = rotina.HorarioFim,
-                    Intervalo = rotina.Intervalo,
-                    Ativa = rotina.Ativa,
-                    RotinaExercicios = rotina.RotinaExercicios != null
-                        ? rotina.RotinaExercicios.Select(re => new RotinaExercicioDto
+                    rotina.Exercicios = rotinaComExercicios.RotinaExercicios
+                        .Where(re => re.Exercicio != null)
+                        .Select(re => new ExercicioDto
                         {
-                            IdExercicio = re.IdExercicio,
-                            IdRotina = re.IdRotina
-                        }).ToList()
-                        : new List<RotinaExercicioDto>(),
-                    RotinaDiaSemanas = rotina.RotinaDiaSemanas != null
-                    ? rotina.RotinaDiaSemanas.Select(rds => new RotinaDiaSemanaDto
-                    {
-                        IdRotina = rds.IdRotina,
-                        IdDiaSemana = rds.IdDiaSemana
-                    }).ToList()
-                    : new List<RotinaDiaSemanaDto>(),
-                    Notificacoes = rotina.Notificacoes != null
-                    ? rotina.Notificacoes.Select(n => new NotificacaoDto
+                            IdExercicio = re.Exercicio.IdExercicio,
+                            Nome = re.Exercicio.Nome,
+                            Descricao = re.Exercicio.Descricao,
+                            Instrucoes = re.Exercicio.Instrucoes,
+                            IdMedico = re.Exercicio.IdMedico,
+                            IdTipoLesao = re.Exercicio.IdTipoLesao,
+                            EncodedGif = re.Exercicio.EncodedGif,
+                            Precaucoes = re.Exercicio.Precaucoes,
+                            Observacoes = re.Exercicio.Observacoes,
+                            DataAtualizacao = re.Exercicio.DataAtualizacao,
+                            DataCriacao = re.Exercicio.DataCriacao
+                        })
+                        .ToList();
+                }
+            }
+
+            //Notificacao Rotina
+            var notificacoes = await _context.Notificacao
+                .Where(n => rotinaIds.Contains((int)n.IdRotina))
+                .ToListAsync();
+
+            foreach (var rotina in rotinaDoPaciente)
+            {
+                rotina.Notificacoes = notificacoes
+                    .Where(n => n.IdRotina == rotina.IdRotina)
+                    .Select(n => new NotificacaoDto
                     {
                         Titulo = n.Titulo,
                         Mensagem = n.Mensagem,
                         Hora = n.Hora,
                         Enviado = n.Enviado
-                    }).ToList()
-                    : new List<NotificacaoDto>()
-                };
-
-                rotinasDto.Add(rotinaDto);
+                    })
+                    .ToList();
             }
 
-            return rotinasDto;
+            return rotinaDoPaciente;
         }
     }
 }
