@@ -44,7 +44,7 @@ namespace ApiMobile.Services
                     HorarioFim = r.HorarioFim,
                     Intervalo = r.Intervalo,
                     Ativa = r.Ativa,
-                    RotinaDiaSemanas = (r.RotinaDiaSemanas).Select(d =>
+                    RotinaDiaSemanas = (r.RotinaDiaSemanas ?? new List<RotinaDiaSemana>()).Select(d =>
                         new RotinaDiaSemanaDto
                         {
                             IdRotina = d.IdRotina,
