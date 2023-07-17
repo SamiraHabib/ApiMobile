@@ -98,6 +98,9 @@ namespace ApiMobile.Services
                     .Where(n => n.IdRotina == rotina.IdRotina)
                     .Select(n => new NotificacaoDto
                     {
+                        IdNotificacao = n.IdNotificacao,
+                        IdRotina = n.IdRotina,
+                        IdExercicio = n.IdExercicio,
                         Titulo = n.Titulo,
                         Mensagem = n.Mensagem,
                         Hora = n.Hora,
