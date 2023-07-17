@@ -44,7 +44,7 @@ namespace ApiMobile.Services
                     HorarioFim = r.HorarioFim,
                     Intervalo = r.Intervalo,
                     Ativa = r.Ativa,
-                    RotinaDiaSemanas = (r.RotinaDiaSemanas ?? new List<RotinaDiaSemana>()).Select(d =>
+                    RotinaDiaSemanas = (r.RotinaDiaSemanas).Select(d =>
                         new RotinaDiaSemanaDto
                         {
                             IdRotina = d.IdRotina,
@@ -57,7 +57,7 @@ namespace ApiMobile.Services
             var rotinaIds = rotinaDoPaciente.Select(r => r.IdRotina).ToList();
 
             var rotinasComExercicios = await _context.Rotina
-                .Include(r => r.RotinaExercicios)
+                .Include(r => r.RotinaExercicios)!
                 .ThenInclude(re => re.Exercicio)
                 .Where(r => rotinaIds.Contains(r.IdRotina))
                 .ToListAsync();
@@ -65,7 +65,7 @@ namespace ApiMobile.Services
             foreach (var rotina in rotinaDoPaciente)
             {
                 var rotinaComExercicios = rotinasComExercicios.FirstOrDefault(r => r.IdRotina == rotina.IdRotina);
-                if (rotinaComExercicios != null)
+                if (rotinaComExercicios?.RotinaExercicios != null)
                 {
                     rotina.Exercicios = rotinaComExercicios.RotinaExercicios
                         .Where(re => re.Exercicio != null)
