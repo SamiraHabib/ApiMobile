@@ -86,11 +86,17 @@ namespace ApiMobile.Models
                 .HasForeignKey(r => r.IdPaciente)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Rotina>()
+                .HasMany(r => r.Notificacoes)
+                .WithOne(n => n.Rotina)
+                .HasForeignKey(n => n.IdRotina)
+                .OnDelete(DeleteBehavior.Cascade);
+
             modelBuilder.Entity<Notificacao>()
                 .HasOne(n => n.Rotina)
                 .WithMany()
                 .HasForeignKey(n => n.IdRotina)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Notificacao>()
                 .HasOne(n => n.Exercicio)
@@ -110,7 +116,7 @@ namespace ApiMobile.Models
               new DiaSemana { IdDiaSemana = 4, Nome = "Quarta-feira" }, 
               new DiaSemana { IdDiaSemana = 5, Nome = "Quinta-feira" }, 
               new DiaSemana { IdDiaSemana = 6, Nome = "Sexta-feira" }, 
-              new DiaSemana { IdDiaSemana = 7, Nome = "S�bado" }
+              new DiaSemana { IdDiaSemana = 7, Nome = "Sábado" }
             );
         }
     }

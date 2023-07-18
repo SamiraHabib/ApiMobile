@@ -92,14 +92,15 @@ namespace ApiMobile.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteRotina(int id)
         {
-            if (_context.Rotina == null)
+            var rotina = await _context.Rotina
+                .Include(r => r.Notificacoes)
+                .FirstOrDefaultAsync(r => r.IdRotina == id);
+            
+            if (rotina == null) return NotFound();
+            
+            if (rotina.Notificacoes != null && rotina.Notificacoes.Any())
             {
-                return NotFound();
-            }
-            var rotina = await _context.Rotina.FindAsync(id);
-            if (rotina == null)
-            {
-                return NotFound();
+                _context.Notificacao.RemoveRange(rotina.Notificacoes);
             }
 
             _context.Rotina.Remove(rotina);
