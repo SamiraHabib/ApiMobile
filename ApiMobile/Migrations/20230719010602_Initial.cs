@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ApiMobile.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -229,13 +229,12 @@ namespace ApiMobile.Migrations
                 {
                     IdNotificacao = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    IdRotina = table.Column<int>(type: "int", nullable: false),
                     IdExercicio = table.Column<int>(type: "int", nullable: false),
                     Titulo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Mensagem = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Hora = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Enviado = table.Column<bool>(type: "bit", nullable: true),
-                    RotinaIdRotina = table.Column<int>(type: "int", nullable: true)
+                    IdRotina = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -251,12 +250,7 @@ namespace ApiMobile.Migrations
                         column: x => x.IdRotina,
                         principalTable: "rotina",
                         principalColumn: "IdRotina",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_notificacao_rotina_RotinaIdRotina",
-                        column: x => x.RotinaIdRotina,
-                        principalTable: "rotina",
-                        principalColumn: "IdRotina");
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -294,7 +288,7 @@ namespace ApiMobile.Migrations
                     { 4, "Quarta-feira" },
                     { 5, "Quinta-feira" },
                     { 6, "Sexta-feira" },
-                    { 7, "S�bado" }
+                    { 7, "Sábado" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -326,11 +320,6 @@ namespace ApiMobile.Migrations
                 name: "IX_notificacao_IdRotina",
                 table: "notificacao",
                 column: "IdRotina");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_notificacao_RotinaIdRotina",
-                table: "notificacao",
-                column: "RotinaIdRotina");
 
             migrationBuilder.CreateIndex(
                 name: "IX_rotina_IdPaciente",

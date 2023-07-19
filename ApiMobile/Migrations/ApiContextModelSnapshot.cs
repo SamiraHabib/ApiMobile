@@ -113,7 +113,7 @@ namespace ApiMobile.Migrations
                         new
                         {
                             IdDiaSemana = 7,
-                            Nome = "S�bado"
+                            Nome = "Sábado"
                         });
                 });
 
@@ -212,9 +212,6 @@ namespace ApiMobile.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RotinaIdRotina")
-                        .HasColumnType("int");
-
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -224,8 +221,6 @@ namespace ApiMobile.Migrations
                     b.HasIndex("IdExercicio");
 
                     b.HasIndex("IdRotina");
-
-                    b.HasIndex("RotinaIdRotina");
 
                     b.ToTable("notificacao", (string)null);
                 });
@@ -434,13 +429,9 @@ namespace ApiMobile.Migrations
                         .IsRequired();
 
                     b.HasOne("ApiMobile.Models.Rotina", "Rotina")
-                        .WithMany()
+                        .WithMany("Notificacoes")
                         .HasForeignKey("IdRotina")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("ApiMobile.Models.Rotina", null)
-                        .WithMany("Notificacoes")
-                        .HasForeignKey("RotinaIdRotina");
 
                     b.Navigation("Exercicio");
 

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiMobile.Migrations
 {
     [DbContext(typeof(ApiContext))]
-    [Migration("20230718034012_AtualizacaoDeDeleteParaRotinaENotificacao")]
-    partial class AtualizacaoDeDeleteParaRotinaENotificacao
+    [Migration("20230719010602_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -215,9 +215,6 @@ namespace ApiMobile.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RotinaIdRotina")
-                        .HasColumnType("int");
-
                     b.Property<string>("Titulo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -227,8 +224,6 @@ namespace ApiMobile.Migrations
                     b.HasIndex("IdExercicio");
 
                     b.HasIndex("IdRotina");
-
-                    b.HasIndex("RotinaIdRotina");
 
                     b.ToTable("notificacao", (string)null);
                 });
@@ -437,13 +432,9 @@ namespace ApiMobile.Migrations
                         .IsRequired();
 
                     b.HasOne("ApiMobile.Models.Rotina", "Rotina")
-                        .WithMany()
+                        .WithMany("Notificacoes")
                         .HasForeignKey("IdRotina")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("ApiMobile.Models.Rotina", null)
-                        .WithMany("Notificacoes")
-                        .HasForeignKey("RotinaIdRotina");
 
                     b.Navigation("Exercicio");
 

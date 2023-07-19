@@ -46,14 +46,26 @@ namespace ApiMobile.Controllers
 
         // PUT: api/Rotinas/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutRotina(int id, Rotina rotina)
+        public async Task<IActionResult> PutRotina(int id, Rotina rotinaBody)
         {
-            if (id != rotina.IdRotina)
+            if (id != rotinaBody.IdRotina)
             {
                 return BadRequest();
             }
 
-            _context.Entry(rotina).State = EntityState.Modified;
+            var rotina = await _context.Rotina.FindAsync(id);
+            if (rotina == null)
+                return NotFound();
+
+            var paciente = await _context.Pacientes.FindAsync(rotina.IdPaciente);
+
+            if (paciente == null)
+                return NotFound();
+
+            rotinaBody.Paciente = paciente;
+            rotinaBody.IdPaciente = rotina.IdPaciente;
+
+            _context.Entry(rotina).CurrentValues.SetValues(rotinaBody);
 
             try
             {
@@ -65,10 +77,8 @@ namespace ApiMobile.Controllers
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return NoContent();
@@ -95,9 +105,9 @@ namespace ApiMobile.Controllers
             var rotina = await _context.Rotina
                 .Include(r => r.Notificacoes)
                 .FirstOrDefaultAsync(r => r.IdRotina == id);
-            
+
             if (rotina == null) return NotFound();
-            
+
             if (rotina.Notificacoes != null && rotina.Notificacoes.Any())
             {
                 _context.Notificacao.RemoveRange(rotina.Notificacoes);

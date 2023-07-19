@@ -93,12 +93,6 @@ namespace ApiMobile.Models
                 .OnDelete(DeleteBehavior.Cascade);
 
             modelBuilder.Entity<Notificacao>()
-                .HasOne(n => n.Rotina)
-                .WithMany()
-                .HasForeignKey(n => n.IdRotina)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            modelBuilder.Entity<Notificacao>()
                 .HasOne(n => n.Exercicio)
                 .WithMany()
                 .HasForeignKey(n => n.IdExercicio)
@@ -118,6 +112,11 @@ namespace ApiMobile.Models
               new DiaSemana { IdDiaSemana = 6, Nome = "Sexta-feira" }, 
               new DiaSemana { IdDiaSemana = 7, Nome = "Sábado" }
             );
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.EnableSensitiveDataLogging();
         }
     }
 }
