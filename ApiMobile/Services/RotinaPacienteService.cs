@@ -38,6 +38,7 @@ namespace ApiMobile.Services
                 .Select(r => new RotinaDto()
                 {
                     IdRotina = r.IdRotina,
+                    IdPaciente = r.IdPaciente,
                     Titulo = r.Titulo,
                     Descricao = r.Descricao,
                     HorarioInicio = r.HorarioInicio,
