@@ -93,27 +93,23 @@ namespace ApiMobile.Controllers
 
             var notificacoes = await _context.Notificacao
                 .Where(n => n.Rotina.IdPaciente == id)
+                .Include(n => n.Exercicio)
                 .ToListAsync();
 
             return Ok(notificacoes);
         }
 
         [HttpGet("{id}/rotinas/notificacoes")]
-        public ActionResult<IEnumerable<Notificacao>> GetNotificacoesDaRotina(int id, bool? statusRotinas)
+        public async Task<ActionResult<IEnumerable<Notificacao>>> GetNotificacoesDaRotina(int id, bool? statusRotinas)
         {
             var query = _context.Notificacao
-                .Where(n => n.Rotina.IdPaciente == id);
+                .Include(n => n.Exercicio)
+                .Where(n => n.Rotina != null && n.Rotina.IdPaciente == id)
+                .Where(n => n.Rotina.Ativa == statusRotinas.Value);
 
-            if (statusRotinas.HasValue)
-            {
-                query = query.Where(n => n.Rotina.Ativa == statusRotinas);
-            }
+            var notificacoes = await query.ToListAsync();
 
-            var notificacoes = query.ToList();
-
-            var notificacoesDto = _mapper.Map<List<NotificacaoDto>>(notificacoes);
-
-            return Ok(notificacoesDto);
+            return Ok(notificacoes);
         }
 
         // PUT: api/Pacientes/5
